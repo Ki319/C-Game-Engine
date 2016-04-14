@@ -111,6 +111,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Draw.cpp" />
     <ClCompile Include="Gui.cpp" />
     <ClCompile Include="OpenGL.cpp" />
     <ClCompile Include="Settings.cpp" />
@@ -120,6 +121,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Draw.h" />
     <ClInclude Include="Gui.h" />
     <ClInclude Include="OpenGL.h" />
     <ClInclude Include="Settings.h" />

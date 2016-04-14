@@ -6,8 +6,6 @@ struct Settings
 	std::string textureDirectory;
 	std::string modelDirectory;
 	std::string soundDirectory;
-	Settings(std::string resourceLocation);
-	~Settings();
 
 	std::string getTextureDirectory()
 	{
