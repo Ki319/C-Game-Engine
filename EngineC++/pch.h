@@ -4,6 +4,8 @@
 #include <GLFW\glfw3.h>
 #include <GL\GL.h>
 #include <glm\vec2.hpp>
+#include <glm\vec4.hpp>
+#include <glm\vec3.hpp>
 #include <string>
 #include <cmath>
 #define TWO_PI 6.28318530718f
