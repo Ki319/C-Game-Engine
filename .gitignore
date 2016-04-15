@@ -69,9 +69,6 @@ artifacts/
 *.scc
 *.VC.opendb
 *.VC.db
-*.sln
-*.vcxproj
-*.vcxprof.filters
 
 # Chutzpah Test files
 _Chutzpah*
