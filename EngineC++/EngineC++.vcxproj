@@ -117,7 +117,7 @@
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="Util.cpp" />
+    <ClCompile Include="MathUtil.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -127,7 +127,8 @@
     <ClInclude Include="Color.h" />
     <ClInclude Include="Draw.h" />
     <ClInclude Include="Gui.h" />
-    <ClInclude Include="Util.h" />
+    <ClInclude Include="IOUtil.h" />
+    <ClInclude Include="MathUtil.h" />
     <ClInclude Include="OpenGL.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="pch.h" />

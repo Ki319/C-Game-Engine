@@ -15,6 +15,7 @@ void App::run()
 	{
 		float delta = getTimer;
 		resetTimer;
+		srand(std::time(0));
 
 		if (checkUpdateWindow())
 			break;

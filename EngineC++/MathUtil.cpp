@@ -1,8 +1,66 @@
-#include "Util.h"
+#include "MathUtil.h"
 
 bool isCoordsInBounds(glm::vec2 coords, glm::vec4 bounds)
 {
 	return bounds.x <= coords.x && bounds.y <= coords.y && bounds.x + bounds.z >= coords.x && bounds.y + bounds.w >= coords.y;
+}
+
+bool isEqual(float valueToCompare, float valueToCompare1, float tolerance)
+{
+	return abs(valueToCompare - valueToCompare1) < tolerance;
+}
+
+int random(int max)
+{
+	return rand() % (max + 1);
+}
+
+float random(float max)
+{
+	return static_cast <float> (rand()) / static_cast <float> (RAND_MAX / max);
+}
+
+int random(int min, int max)
+{
+	return rand() % (max - min + 1) + min;
+}
+
+float random(float min, float max)
+{
+	return static_cast <float> (rand()) / static_cast <float> (RAND_MAX / (max - min)) + min;
+}
+
+int clamp(int value, int clampAtMin, int clampAtMax)
+{
+	if (value < clampAtMin)
+		return clampAtMin;
+	if (value > clampAtMax)
+		return value;
+	return value;
+}
+
+float clamp(float value, float clampAtMin, float clampAtMax)
+{
+	if (value < clampAtMin)
+		return clampAtMin;
+	if (value > clampAtMax)
+		return value;
+	return value;
+}
+
+bool isNegative(int value)
+{
+	return value < 0;
+}
+
+bool isNegative(float value)
+{
+	return value < 0;
+}
+
+float log(float base, float value)
+{
+	return log(value) / log(base);
 }
 
 float pythagoreon(float x, float y)
@@ -109,3 +167,4 @@ glm::vec3 distanceInVecSquared(glm::vec3 start, glm::vec3 end)
 {
 	return glm::vec3(distanceOfXSquared(start, end), distanceOfYSquared(start, end), distanceOfZSquared(start, end));
 }
+
