@@ -168,3 +168,62 @@ glm::vec3 distanceInVecSquared(glm::vec3 start, glm::vec3 end)
 	return glm::vec3(distanceOfXSquared(start, end), distanceOfYSquared(start, end), distanceOfZSquared(start, end));
 }
 
+glm::vec2 center(glm::vec2 vertices[])
+{
+	double totalX = vertices[0].x;
+	double totalY = vertices[0].y;
+	for (int i = 1; i < sizeof(vertices); i++)
+	{
+		totalX += vertices[i].x;
+		totalY += vertices[i].y;
+	}
+	return glm::vec2(totalX / sizeof(vertices), totalY / sizeof(vertices));
+}
+
+glm::vec3 center(glm::vec3 vertices[])
+{
+	double totalX = vertices[0].x;
+	double totalY = vertices[0].y;
+	double totalZ = vertices[0].z;
+	for (int i = 1; i < sizeof(vertices); i++)
+	{
+		totalX += vertices[i].x;
+		totalY += vertices[i].y;
+		totalZ += vertices[i].z;
+	}
+	return glm::vec3(totalX / sizeof(vertices), totalY / sizeof(vertices), totalZ / sizeof(vertices));
+}
+
+float toValueLinear(float currentValue, float toValue, float speed)
+{
+	if (currentValue > toValue)
+		return std::fmaxf(toValue, currentValue - speed);
+	return std::fminf(toValue, currentValue + speed);
+}
+
+float toValueLinear(float currentValue, float toValue, float speed, float delta)
+{
+	if (currentValue > toValue)
+		return std::fmaxf(toValue, currentValue - speed * delta);
+	return std::fminf(toValue, currentValue + speed * delta);
+}
+
+float toValueExponential(float currentValue, float toValue, float speed)
+{
+	return currentValue + (currentValue - toValue) / speed;
+}
+
+float toValueExponential(float currentValue, float toValue, float speed, float delta)
+{
+	return currentValue + (currentValue - toValue) / speed * delta;
+}
+
+float toValueDistance(float currentValue, float toValue, float speed)
+{
+	return (currentValue - toValue) / speed;
+}
+
+float toValueDistance(float currentValue, float toValue, float speed, float delta)
+{
+	return (currentValue - toValue) / speed * delta;
+}

@@ -44,18 +44,14 @@ static float distanceInFloatSquared(glm::vec3 start, glm::vec3 end);
 static glm::vec2 distanceInVecSquared(glm::vec2 start, glm::vec2 end);
 static glm::vec3 distanceInVecSquared(glm::vec3 start, glm::vec3 end);
 
-static glm::vec2 center(glm::vec2 vertices, ...);
-static glm::vec3 center(glm::vec3 vertices, ...);
+static glm::vec2 center(glm::vec2 vertices[]);
+static glm::vec3 center(glm::vec3 vertices[]);
 
 static float toValueLinear(float currentValue, float toValue, float speed);
 static float toValueLinear(float currentValue, float toValue, float speed, float delta);
 static float toValueExponential(float currentValue, float toValue, float speed);
 static float toValueExponential(float currentValue, float toValue, float speed, float delta);
 
-static float toValueDistanceLinear(float currentValue, float toValue, float speed);
-static float toValueDistanceLinear(float currentValue, float toValue, float speed, float delta);
-static float toValueDistanceExponential(float currentValue, float toValue, float speed);
-static float toValueDistanceExponential(float currentValue, float toValue, float speed, float delta);
+static float toValueDistance(float currentValue, float toValue, float speed);
+static float toValueDistance(float currentValue, float toValue, float speed, float delta);
 
-static int locationInList(int currentLocation, int sizeOfList);
-static bool areLocationsEqual(int location1, int location2, int sizeOfList);

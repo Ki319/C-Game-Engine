@@ -18,10 +18,14 @@
 #define closeWindow Window::c()
 #define destroyWindow Window::d()
 #define createAndCenter(width, height, title, monitor) Window::cac(width, height, title, monitor);
-#define getWindowWidth Window::gww()
-#define getWindowHeight Window::gwh()
-#define getWindowWidthScale windowWidthScale / getWindowWidth
-#define getWindowHeightScale windowHeightScale / getWindowHeight
+#define windowWidth Window::ww()
+#define windowHeight Window::wh()
+#define windowWidthScaled Window::wws()
+#define setWindowWidthScale(defaultWidth) Window::swws(defaultWidth)
+#define windowHeightScaled Window::whs()
+#define setWindowHeightScale(defaultHeight) Window::sww(defaultHeight)
+#define window2dZScale Window::w2zs()
+#define setWindow2dZScale(defaultZScale) Window::sw2zs(defaultZScale)
 #define getModKeys Window::gmk()
 #define getKey(key) Window::gk(key)
 #define getShiftKey(key) Window::gsk(key)
@@ -38,10 +42,6 @@ static App *application = nullptr;
 static GLFWwindow *windowInstance = nullptr;
 static Settings currentSettings;
 static int currentWindowMode;
-
-static const int windowWidthScale = 1920;
-static const int windowHeightScale = 1080;
-static const int window2dZScale = 100;
 
 class Window;
 
@@ -104,35 +104,82 @@ private:
 	void handleKeyInput(float delta);
 };
 
+/*
+Just don't even bother really, this code is messy on purpose. You may ask why,
+the reason is for the user to not have to type as much code out while perserving order.
+This class is not to be called, the defines up top take care of it all and have proper naming.
+Goal is to minimize the usage of <CLASSNAME>::<FUNCTION>(); and just have <FUNCTION>(); instead
+*/
 class Window
 {
 public:
-	static void swc();//setupWindowConsts
-	static bool sw();//setupWindow
-	static void swe();//setWindowEvents
-	static bool sc();//shouldClose
-	static void sb();//swapBuffers
-	static void us();//updateSize
-	static void d2();//gl2d
-	static void d3(float fovy, float zNear, float zFar);//gl3d
-	static void c();//close
-	static void d();//destroy
+	//setupWindowConsts
+	static void swc();
+	//setupWindow
+	static bool sw();
+	//setWindowEvents
+	static void swe();
+	//shouldClose
+	static bool sc();
+	//swapBuffers
+	static void sb();
+	//updateSize
+	static void us();
+	//gl2d
+	static void d2();
+	//gl3d
+	static void d3(float fovy, float zNear, float zFar);
+	//close
+	static void c();
+	//destroy
+	static void d();
 
-	static GLFWwindow *cac(int width, int height, const char *title, GLFWmonitor *monitor);//createAndCenter
+	//createAndCenter
+	static GLFWwindow *cac(int width, int height, const char *title, GLFWmonitor *monitor);
 
-	static int gww();//getWindowWidth
-	static int gwh();//getWindowHeight
-	static int gmk();//getModKeys
-	static int gk(int key);//getKey
-	static int gsk(int key);//getShiftKey
-	static bool nmk(int key);//notModKey
-	static void amk(int key);//addModKey
-	static void rmk(int key);//removeModKey
+	//windowWidth
+	static int ww();
+	//windowHeight
+	static int wh();
+	//windowWidthScaled
+	static float wws();
+	//setWindowWidthScale
+	static void swws(int defaultWindowWidth);
+	//windowHeightScaled
+	static float whs();
+	//setWindowHeightScaled
+	static void swhs(int defaultWindowHeight);
+	//window2dZScaled
+	static float w2zs();
+	//setWindow2dZScaled
+	static void sw2zs(int defaultZScale);
+	//getModKeys
+	static int gmk();
+	//getKey
+	static int gk(int key);
+	//getShiftKey
+	static int gsk(int key);
+	//notModKey
+	static bool nmk(int key);
+	//addModKey
+	static void amk(int key);
+	//removeModKey
+	static void rmk(int key);
 
 private:
 	static bool isRunning;
-	static int windowWidth;
-	static int windowHeight;
+	//windowWidth
+	static int wW;
+	//windowHeight
+	static int wH;
+	//windowWidthScale
+	static float wWS;
+	//windowHeightScale
+	static float wHS;
+	//defaultWindowWidth
+	static int dww;
+	//defaultWindowHeight
+	static int dwh;
 	static std::vector<int> modKeys;
 	static std::map<int, int> shiftKeys;
 	static int currentModKeys;

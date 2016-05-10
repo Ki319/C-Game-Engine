@@ -98,10 +98,10 @@ void App::setGui(Gui *newGui)
 
 void App::cursorMove(double mouseX, double mouseY)
 {
-	mousePosition.mouseDeltaX = (mouseX - mousePosition.mouseX) * getWindowWidthScale;
-	mousePosition.mouseDeltaY = (mouseY - mousePosition.mouseY) * getWindowHeightScale;
-	mousePosition.mouseX = mouseX * getWindowWidthScale;
-	mousePosition.mouseY = mouseY * getWindowHeightScale;
+	mousePosition.mouseDeltaX = (mouseX - mousePosition.mouseX) * windowWidthScaled;
+	mousePosition.mouseDeltaY = (mouseY - mousePosition.mouseY) * windowHeightScaled;
+	mousePosition.mouseX = mouseX * windowWidthScaled;
+	mousePosition.mouseY = mouseY * windowHeightScaled;
 }
 
 void App::cursorClick(int button, int action)
@@ -209,7 +209,7 @@ float App::getMouseDeltaY()
 void Window::swc()
 {
 	isRunning = true;
-	windowWidth = windowHeight = currentModKeys = 0;
+	wW = wH = currentModKeys = 0;
 	modKeys.push_back(GLFW_KEY_LEFT_SHIFT);
 	modKeys.push_back(GLFW_KEY_RIGHT_SHIFT);
 	modKeys.push_back(GLFW_KEY_LEFT_CONTROL);
@@ -311,8 +311,9 @@ void Window::us()
 	int width = 0;
 	int height = 0;
 	glfwGetWindowSize(windowInstance, &width, &height);
-	windowWidth = width;
-	windowHeight = height;
+	wW = width;
+	wH = height;
+	wWS = wW / 
 }
 
 void Window::d2()
@@ -320,7 +321,7 @@ void Window::d2()
 	glViewport(0, 0, windowWidth, windowHeight);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0, windowWidthScale, windowHeightScale, 0, -window2dZScale, window2dZScale);
+	glOrtho(0, wWS, wHS, 0, -window2dZScale, window2dZScale);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
@@ -358,12 +359,12 @@ GLFWwindow *Window::cac(int width, int height, const char *title, GLFWmonitor *m
 	return instance;
 }
 
-int Window::gww()
+int Window::ww()
 {
 	return windowWidth;
 }
 
-int Window::gwh()
+int Window::wh()
 {
 	return windowHeight;
 }
