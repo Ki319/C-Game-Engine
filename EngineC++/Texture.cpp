@@ -1,79 +1,58 @@
 #include "Texture.h"
 
-TexCoords::TexCoords(float u, float v, float u1, float v1)
+CharData::CharData() {}
+
+TexCoord CharData::getTexture()
 {
-	minU = u;
-	minV = v;
-	maxU = u1;
-	maxV = v1;
+	return texture;
 }
 
-void TexCoords::reduce(int width, int height)
+Kerning CharData::getKerning()
 {
-	minU /= (float)width;
-	maxU /= (float)width;
-	minV /= (float)height;
-	maxV /= (float)height;
+	return kerning;
 }
 
-void TexCoords::setMinU(float u)
+float CharData::getWidth()
 {
-	minU = u;
+	return width;
 }
 
-void TexCoords::setMinV(float v)
+float CharData::getHeight()
 {
-	minV = v;
+	return height;
 }
 
-void TexCoords::setMaxU(float u)
+float CharData::getXOffset()
 {
-	maxU = u;
+	return xOffset;
 }
 
-void TexCoords::setMaxV(float v)
+float CharData::getYOffset()
 {
-	maxV = v;
+	return yOffset;
 }
 
-float TexCoords::getMinU()
+float CharData::getAdvance()
 {
-	return minU;
+	return xadvance;
 }
 
-float TexCoords::getMinV()
+void Kerning::add(CharData otherChar, float adjustment)
 {
-	return minV;
+	kernings[otherChar] = adjustment;
 }
 
-float TexCoords::getMaxU()
+float Kerning::get(CharData otherChar)
 {
-	return maxU;
+	return kernings[otherChar];
 }
 
-float TexCoords::getMaxV()
-{
-	return maxV;
-}
+Texture::Texture() {}
 
-float TexCoords::getMinU(int animationID)
+Texture::~Texture()
 {
-	return getMinU();
-}
-
-float TexCoords::getMinV(int animationID)
-{
-	return getMinV();
-}
-
-float TexCoords::getMaxU(int animationID)
-{
-	return getMaxU();
-}
-
-float TexCoords::getMaxV(int animationID)
-{
-	return getMaxV();
+	delete textureId;
+	delete image;
 }
 
 void Texture::setTextureId(const GLuint *texId)
@@ -84,6 +63,162 @@ void Texture::setTextureId(const GLuint *texId)
 const GLuint *Texture::getTextureId()
 {
 	return textureId;
+}
+
+void Texture::load(char *image)
+{
+	this->image = image;
+}
+
+char *Texture::getImage()
+{
+	return image;
+}
+
+int Texture::getWidth()
+{
+	return width;
+}
+
+int Texture::getHeight()
+{
+	return height;
+}
+
+bool Texture::mipmap()
+{
+	return false;
+}
+
+char *Texture::load(fs::path pathLoc)
+{
+	char *data;
+	return data;
+}
+
+TexCoord Texture::getTexture()
+{
+	return TexCoord(0, 0, 1, 1);
+}
+
+Font::Font()
+{
+
+}
+
+Font::~Font()
+{
+	
+}
+
+char *Font::load(fs::path pathLoc)
+{
+	char *data;
+	return data;
+}
+
+CharData Font::getCharData(char letter)
+{
+	std::map<char, CharData>::iterator it = fontBitmap.find(letter);
+	if (it != fontBitmap.end())
+	{
+		return it->second;
+	}
+	CharData data = CharData();
+	data.width = -1;
+	return data;
+}
+
+void Font::drawString(std::string whatchars, double x, double y, double z, double pointFont)
+{
+	CharData letter;
+	int i;
+	double width;
+	double xOffset;
+	double yOffset;
+	glStart();
+	for (i = 0; i < whatchars.length(); i++)
+	{
+		letter = getCharData(whatchars.at(i));
+		if (letter.width != -1)
+		{
+			width = letter.getWidth() * pointFont;
+			xOffset = letter.getXOffset() * pointFont;
+			yOffset = letter.getYOffset() * pointFont;
+			if (whatchars.at(i) != ' ')
+				rectUV(x + xOffset, y + yOffset, x + width + xOffset, y + letter.getHeight() * pointFont + yOffset, z, letter.getTexture());
+			x += letter.getAdvance() * pointFont;
+		}
+	}
+	glEnd();
+}
+
+void Font::drawAlignedString(std::string whatchars, double x, double y, double z, double pointFont, int alignment)
+{
+	switch (alignment)
+	{
+	case 1:
+		x -= getTextWidth(whatchars, pointFont) / 2;
+		break;
+	case 2:
+		x -= getTextWidth(whatchars, pointFont);
+		break;
+	}
+	drawString(whatchars, x, y, z, pointFont);
+}
+
+void Font::drawFittedString(std::string whatchars, double x, double y, double z, double width, double height)
+{
+	drawString(whatchars, x, y, z, fminf(height / getTextHeight(whatchars), width / getTextWidth(whatchars)));
+}
+
+void Font::drawAlignedFittedString(std::string whatchars, double x, double y, double z, int alignment, double width, double height)
+{
+	double pointFont = fminf(height / getTextHeight(whatchars), width / getTextWidth(whatchars));
+	switch (alignment)
+	{
+	case 1:
+		x -= getTextWidth(whatchars, pointFont) / 2;
+		break;
+	case 2:
+		x -= getTextWidth(whatchars, pointFont);
+		break;
+	}
+	drawString(whatchars, x, y, z, pointFont);
+}
+
+void Font::drawColorString(std::string whatchars, double x, double y, double z, double pointFont, Color rightColor)
+{
+
+}
+
+void Font::drawAlignedCString(std::string whatchars, double x, double y, double z, double pointFont, int alignment, Color rightColor)
+{
+	switch (alignment)
+	{
+	case 1:
+		x -= getTextWidth(whatchars, pointFont) / 2;
+		break;
+	case 2:
+		x -= getTextWidth(whatchars, pointFont);
+		break;
+	}
+	drawColorString(whatchars, x, y, z, pointFont, rightColor);
+}
+
+void Font::drawAlignedFCString(std::string whatchars, double x, double y, double z, int alignment, double width, double height, Color rightColor)
+{
+	double pointFont = fminf(height / getTextHeight(whatchars), width / getTextWidth(whatchars));
+	switch (alignment)
+	{
+	case 1:
+		x -= getTextWidth(whatchars, pointFont) / 2;
+		break;
+	case 2:
+		x -= getTextWidth(whatchars, pointFont);
+		break;
+	}
+	drawColorString(whatchars, x, y, z, pointFont, rightColor);
 }
 
 void Engine::loadTextures()

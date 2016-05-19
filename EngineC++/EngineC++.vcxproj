@@ -116,6 +116,7 @@
     <ClCompile Include="OpenGL.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="Color.cpp" />
+    <ClCompile Include="TexCoord.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="MathUtil.cpp" />
   </ItemGroup>
@@ -132,6 +133,7 @@
     <ClInclude Include="OpenGL.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="TexCoord.h" />
     <ClInclude Include="Texture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
