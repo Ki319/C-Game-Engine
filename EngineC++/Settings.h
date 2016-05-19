@@ -1,36 +1,27 @@
 #include "pch.h"
 
-struct Settings
+class Settings
 {
+
+public:
+
+	Settings();
+	~Settings();
+
+	int getNextWindow();
+	fs::path getResourcePath();
+	fs::path getTexturePath();
+	fs::path getModelPath();
+	fs::path getSoundPath();
+
+	void setNextWindow(int windowMode);
+
+private:
 	int nextWindowMode;
-	std::string textureDirectory;
-	std::string modelDirectory;
-	std::string soundDirectory;
+	fs::path resourcePath;
+	fs::path texturePath;
+	fs::path modelPath;
+	fs::path soundPath;
 
-	std::string getTextureDirectory()
-	{
-		return textureDirectory;
-	}
-
-	std::string getModelDirectory()
-	{
-		return modelDirectory;
-	}
-
-	std::string getSoundDirectory()
-	{
-		return soundDirectory;
-	}
-
-	int getNextWindow()
-	{
-		return nextWindowMode;
-	}
-
-	void setNextWindow(int windowMode)
-	{
-		nextWindowMode = windowMode;
-	}
-	
 };
 

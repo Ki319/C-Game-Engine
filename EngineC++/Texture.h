@@ -1,38 +1,100 @@
 #pragma once
 #include "pch.h"
-#define loadTextures Texture::lt()
-#define debugLoadTextures Texture::dlt()
-#define getTextureMap Texture::gtd()
-#define loadTextureMap(textureData) Texture::ltd(textureData)
-#define clearAllTextures Texture::cat()
-#define clearStitchedTextures Texture::cst()
-#define clearFontTextures Texture::cft()
-#define clearVirtualTextures Texture::cvt()
-#define clearTexture(textureName) Texture::ct(textureName)
-#define loadStitchedTexture(textureName) Texture::lst(textureName)
-#define loadFont(fontName) Texture::lf(fontName)
-#define loadModel(modelName) Texture::lm(modelName)
-#define glBindTexture(textureId)
+#include "Application.h"
 
-class ITexture;
-struct Model;
+class Texture;
+class TextureAtlas;
+class Font;
+class IModel;
+class ObjModel;
 
-struct Texture
+namespace Engine
+{
+	std::map<std::string, Texture *> textureMap = std::map<std::string, Texture *>();
+	std::map<std::string, IModel *> modelMap = std::map<std::string, IModel *>();
+	Texture *currentTexture;
+
+	void loadTextures();
+	void debugLoadTextures();
+	std::map<std::string, char *> getTextureMap();
+	void loadTextureMap(std::map<std::string, char *> textureMap);
+	void deleteTextureMap();
+	void deleteAtlasTextures();
+	void deleteFontTextures();
+	void deleteTextures();
+	void deleteTexture(std::string texture);
+	void loadTexture(std::string texture);
+	void loadAtlasTexture(std::string atlasTexture);
+	void loadFont(std::string font);
+	void bindTexture(const GLuint *textureId);
+	bool bindTexture(std::string texture);
+	bool bindTexture(std::string texture, std::string subtexture);
+	const GLuint *getTextureId(std::string texture);
+	Font *getFont(std::string font);
+	const GLuint *createTextureId(char * image, int width, int height, bool mipmap);
+}
+
+struct TexCoords
+{
+public:
+	TexCoords(float u, float v, float u1, float v1);
+
+	void reduce(int width, int height);
+	void setMinU(float u);
+	void setMinV(float v);
+	void setMaxU(float u);
+	void setMaxV(float v);
+	float getMinU();
+	float getMinV();
+	float getMaxU();
+	float getMaxV();
+	float getMinU(int animationId);
+	float getMinV(int animationId);
+	float getMaxU(int animationId);
+	float getMaxV(int animationId);
+
+private:
+	float minU, minV, maxU, maxV;
+};
+
+class Texture
 {
 public:
 	Texture();
 	~Texture();
 
-	static void lt();
-private:
-	static const std::map<std::string, ITexture> textureMap;
-	static const std::map<std::string, Model> modelMap;
-	static ITexture currentTexture;
+	void setTextureId(const GLuint *texId);
+	const GLuint *getTextureId();
+	void load(char *image);
+	char *getImage();
+	int getWidth();
+	int getHeight();
+
+	bool mipmap();
+
+	virtual char *load(fs::path pathLoc);
+
+	virtual TexCoords getTexture();
+protected:
+	const GLuint *textureId;
+	int width;
+	int height;
+	char *image = nullptr;
 };
 
-class ITexture
+class TextureAtlas : public Texture
 {
-
+public:
+	TexCoords getTexture();
+	char *load(fs::path pathLoc);
 };
 
+class Font : public Texture
+{
+public:
+	Font();
+	~Font();
+
+	char *load(fs::path pathLoc);
+};
 

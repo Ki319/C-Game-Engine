@@ -7,32 +7,7 @@
 #define mY App::getMouseY()
 #define mDX App::getMouseDeltaX()
 #define mDY App::getMouseDeltaY()
-#define setupWindowConsts Window::swc()
-#define setupWindow Window::sw()
-#define setWindowEvents Window::swe()
-#define shouldClose Window::sc()
-#define swapBuffers Window::sb()
-#define updateSize Window::us()
-#define setup2d Window::d2()
-#define setup3d(fovy, zNear, zFar) Window::d3(fovy, zNear, zFar)
-#define closeWindow Window::c()
-#define destroyWindow Window::d()
-#define createAndCenter(width, height, title, monitor) Window::cac(width, height, title, monitor);
-#define windowWidth Window::ww()
-#define windowHeight Window::wh()
-#define windowWidthScaled Window::wws()
-#define setWindowWidthScale(defaultWidth) Window::swws(defaultWidth)
-#define windowHeightScaled Window::whs()
-#define setWindowHeightScale(defaultHeight) Window::sww(defaultHeight)
-#define window2dZScale Window::w2zs()
-#define setWindow2dZScale(defaultZScale) Window::sw2zs(defaultZScale)
-#define getModKeys Window::gmk()
-#define getKey(key) Window::gk(key)
-#define getShiftKey(key) Window::gsk(key)
-#define notModKey(key) Window::nmk(key)
-#define addModKey(key) Window::amk(key)
-#define removeModKey(key) Window::rmk(key)
-#define getTimer glfwGetTime()
+#define timer glfwGetTime()
 #define resetTimer glfwSetTime(0)
 #define pollEvents glfwPollEvents()
 
@@ -40,7 +15,7 @@ class App;
 
 static App *application = nullptr;
 static GLFWwindow *windowInstance = nullptr;
-static Settings currentSettings;
+static Settings *currentSettings = nullptr;
 static int currentWindowMode;
 
 class Window;
@@ -57,11 +32,11 @@ struct Mouse
 class App
 {
 public:
+
+	virtual GLFWwindow *createWindow() = 0;
+
 	void run();
 	void setGui(Gui *newGui);
-
-	virtual void init() = 0;
-	virtual GLFWwindow *createWindow() = 0;
 
 	virtual void cursorMoveBounds(bool entered) {}
 	virtual void cursorMove(double mouseX, double mouseY);
@@ -76,6 +51,7 @@ public:
 	virtual void windowSize(int width, int height);
 	virtual void update(float delta);
 	virtual void render(float delta);
+	virtual void createSettings();
 
 	Gui *getCurrentScreen();
 
@@ -84,22 +60,16 @@ public:
 	static float getMouseDeltaX();
 	static float getMouseDeltaY();
 protected:
-	static Mouse mousePosition;
 
 	std::map<int, glm::vec2*> keyboardPress = std::map<int, glm::vec2*>();
 	Gui *currentGui;
 
-	virtual Settings getSettings()
-	{
-		return Settings();
-	}
+	virtual void init() = 0;
 
-	virtual std::string getResourceLocation()
-	{
-		return "resources";
-	}
-
+	static Mouse mousePosition;
+	static boost::filesystem::path resourcePath;
 private:
+
 	bool checkUpdateWindow();
 	void handleKeyInput(float delta);
 };
@@ -114,72 +84,75 @@ class Window
 {
 public:
 	//setupWindowConsts
-	static void swc();
+	static void setupConsts();
 	//setupWindow
-	static bool sw();
+	static bool setup();
 	//setWindowEvents
-	static void swe();
+	static void setEvents();
 	//shouldClose
-	static bool sc();
+	static bool shouldClose();
 	//swapBuffers
-	static void sb();
+	static void swapBuffers();
 	//updateSize
-	static void us();
+	static void updateSize();
 	//gl2d
-	static void d2();
+	static void gl2d();
 	//gl3d
-	static void d3(float fovy, float zNear, float zFar);
+	static void gl3d(float fovy, float zNear, float zFar);
 	//close
-	static void c();
+	static void close();
 	//destroy
-	static void d();
+	static void destroy();
 
 	//createAndCenter
-	static GLFWwindow *cac(int width, int height, const char *title, GLFWmonitor *monitor);
+	static GLFWwindow *createAndCenter(int width, int height, const char *title, GLFWmonitor *monitor);
 
 	//windowWidth
-	static int ww();
+	static int width();
 	//windowHeight
-	static int wh();
+	static int height();
 	//windowWidthScaled
-	static float wws();
+	static float widthScaled();
 	//setWindowWidthScale
-	static void swws(int defaultWindowWidth);
+	static void setWidthScaled(int defaultWidth);
 	//windowHeightScaled
-	static float whs();
+	static float heightScaled();
 	//setWindowHeightScaled
-	static void swhs(int defaultWindowHeight);
+	static void setHeightScaled(int defaultHeight);
 	//window2dZScaled
-	static float w2zs();
+	static float zLength();
 	//setWindow2dZScaled
-	static void sw2zs(int defaultZScale);
+	static void setZLength(float defaultZScale);
 	//getModKeys
-	static int gmk();
+	static int getModKeys();
 	//getKey
-	static int gk(int key);
+	static int getKey(int key);
 	//getShiftKey
-	static int gsk(int key);
+	static int getKeyWithShift(int key);
 	//notModKey
-	static bool nmk(int key);
+	static bool notModKey(int key);
 	//addModKey
-	static void amk(int key);
+	static void addModKey(int key);
 	//removeModKey
-	static void rmk(int key);
+	static void removeModKey(int key);
 
 private:
 	static bool isRunning;
 	//windowWidth
-	static int wW;
+	static int windowWidth;
 	//windowHeight
-	static int wH;
+	static int windowHeight;
 	//windowWidthScale
-	static float wWS;
+	static float windowWidthScale;
 	//windowHeightScale
-	static float wHS;
+	static float windowHeightScale;
 	//defaultWindowWidth
-	static int dww;
+	static int defaultWindowWidth;
 	//defaultWindowHeight
-	static int dwh;
+	static int defaultWindowHeight;
+	//window2dZScaled
+	static float windowZScale;
+
 	static std::vector<int> modKeys;
 	static std::map<int, int> shiftKeys;
 	static int currentModKeys;
