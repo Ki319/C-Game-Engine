@@ -12,14 +12,6 @@ void Engine::glBlend(int src = GL_SRC_ALPHA, int output = GL_ONE_MINUS_SRC_ALPHA
 }
 
 /**
-* begin drawing quads
-*/
-void Engine::glStart()
-{
-	glBegin(GL_QUADS);
-}
-
-/**
 * Called to clear color, depth, and stencil buffers
 */
 void Engine::glClearBuffers(int bufferClear = GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT)
@@ -43,6 +35,7 @@ void Engine::glDefaults()
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glDisable(GL_DITHER);
+	glEnable(GL_TEXTURE_2D);
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -51,72 +44,28 @@ void Engine::glDefaults()
 	glColor(1, 1, 1, 1);
 }
 
-/**
-* color scheme for rendering
-* @param r
-* @param g
-* @param b
-* @param a
-*/
-void Engine::glColor(double r, double g, double b, double a = 1)
+void Engine::glSetup2d(glm::vec4 renderArea, GLdouble width, GLdouble height, GLdouble zScaleMax)
 {
-	glColor4d(r, g, b, a);
-	getColor().setColor(r, g, b, a);
+	glViewport(renderArea.x, renderArea.y, renderArea.z + renderArea.x, renderArea.w + renderArea.y);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0, width, height, 0, -zScaleMax, zScaleMax);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 }
 
-/**
-* color scheme for rendering
-* @param color
-*/
-void Engine::glColor(Color color)
+void Engine::glSetup3d(glm::vec4 renderArea, float windowRatio, float fovy, float zNear, float zFar)
 {
-	glColor4d(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
-	getColor().setColor(color);
-}
-
-/**
-* get current set color
-* @return
-*/
-Color Engine::getColor()
-{
-	return currentColor;
-}
-
-/**
-* get current red
-* @return
-*/
-double Engine::getRed()
-{
-	return getColor().getRed();
-}
-
-/**
-* get current green
-* @return
-*/
-double Engine::getGreen()
-{
-	return getColor().getGreen();
-}
-
-/**
-* get current blue
-* @return
-*/
-double Engine::getBlue()
-{
-	return getColor().getBlue();
-}
-
-/**
-* get current alpha
-* @return
-*/
-double Engine::getAlpha()
-{
-	return getColor().getAlpha();
+	glViewport(renderArea.x, renderArea.y, renderArea.z + renderArea.x, renderArea.w + renderArea.y);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	double ymax = zNear * tan(fovy * PI / 360.0);
+	double ymin = -ymax;
+	double xmin = ymin * windowRatio;
+	double xmax = ymax * windowRatio;
+	glFrustum(xmin, xmax, ymin, ymax, zNear, zFar);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 }
 
 /**
@@ -295,4 +244,72 @@ void Engine::glVertex(double x, double y, double z, double u, double v, TexCoord
 {
 	glColor(r, g, b, a);
 	glVertex(x, y, z, u, v, texture, animationID);
+}
+
+/**
+* color scheme for rendering
+* @param r
+* @param g
+* @param b
+* @param a
+*/
+void Engine::glColor(double r, double g, double b, double a = 1)
+{
+	glColor4d(r, g, b, a);
+	getColor().setColor(r, g, b, a);
+}
+
+/**
+* color scheme for rendering
+* @param color
+*/
+void Engine::glColor(Color color)
+{
+	glColor4d(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+	getColor().setColor(color);
+}
+
+/**
+* get current set color
+* @return
+*/
+Color Engine::getColor()
+{
+	return currentColor;
+}
+
+/**
+* get current red
+* @return
+*/
+double Engine::getRed()
+{
+	return getColor().getRed();
+}
+
+/**
+* get current green
+* @return
+*/
+double Engine::getGreen()
+{
+	return getColor().getGreen();
+}
+
+/**
+* get current blue
+* @return
+*/
+double Engine::getBlue()
+{
+	return getColor().getBlue();
+}
+
+/**
+* get current alpha
+* @return
+*/
+double Engine::getAlpha()
+{
+	return getColor().getAlpha();
 }

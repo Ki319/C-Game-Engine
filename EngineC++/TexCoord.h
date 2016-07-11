@@ -9,10 +9,6 @@ public:
 	void setMinV(float v);
 	void setMaxU(float u);
 	void setMaxV(float v);
-	float getMinU();
-	float getMinV();
-	float getMaxU();
-	float getMaxV();
 	float getMinU(int animationId);
 	float getMinV(int animationId);
 	float getMaxU(int animationId);

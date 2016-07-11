@@ -1,57 +1,119 @@
 #include "pch.h"
 
-static bool isCoordsInBounds(glm::vec2 coords, glm::vec4 bounds);
+//find if a point given in a vector of two values is within a rectangle
+//given by a x, y, width, and height.
+bool isCoordsInBounds(glm::vec2 coords, glm::vec4 bounds);
 
-static bool isEqual(float valueToCompare, float valueToCompare1, float tolerance = .00001);
+//floating point equality function, tolerance is defaulted to .00001
+bool isEqual(float valueToCompare, float valueToCompare1, float tolerance = .00001);
 
-static int random(int max);
-static float random(float max);
-static int random(int min, int max);
-static float random(float min, float max);
+//recieve a random value from 0 to max - 1 in integer form
+int random(int max);
 
-static int clamp(int value, int clampAtMin, int clampAtMax);
-static float clamp(float value, float clampAtMin, float clampAtMax);
+//recieve a random value within the bounds of 0 <= value < max in floating point form.
+float random(float max);
 
-static bool isNegative(int value);
-static bool isNegative(float value);
+//recieve a random value from min to max in integer form.
+int random(int min, int max);
 
-static float log(float base, float value);
+//recieve a random value within the bounds of min <= value < max in floating point form.
+float random(float min, float max);
 
-static float pythagoreon(float x, float y);
-static float pythagoreon(float x, float y, float z);
 
-static float distanceOfX(glm::vec2 start, glm::vec2 end);
-static float distanceOfX(glm::vec3 start, glm::vec3 end);
-static float distanceOfY(glm::vec2 start, glm::vec2 end);
-static float distanceOfY(glm::vec3 start, glm::vec3 end);
-static float distanceOfZ(glm::vec3 start, glm::vec3 end);
+//clmap a value (using math::min and math::max) to a minimum and a maximum.
+int clamp(int value, int clampAtMin, int clampAtMax);
 
-static float distanceInFloat(glm::vec2 start, glm::vec2 end);
-static float distanceInFloat(glm::vec3 start, glm::vec3 end);
+//clamp a value (using math::min and math::max) to a minimum and a maximum.
+float clamp(float value, float clampAtMin, float clampAtMax);
 
-static glm::vec2 distanceInVec(glm::vec2 start, glm::vec2 end);
-static glm::vec3 distanceInVec(glm::vec3 start, glm::vec3 end);
 
-static float distanceOfXSquared(glm::vec2 start, glm::vec2 end);
-static float distanceOfXSquared(glm::vec3 start, glm::vec3 end);
-static float distanceOfYSquared(glm::vec2 start, glm::vec2 end);
-static float distanceOfYSquared(glm::vec3 start, glm::vec3 end);
-static float distanceOfZSquared(glm::vec3 start, glm::vec3 end);
+//log function with a base value other than 10.
+float log(float base, float value);
 
-static float distanceInFloatSquared(glm::vec2 start, glm::vec2 end);
-static float distanceInFloatSquared(glm::vec3 start, glm::vec3 end);
 
-static glm::vec2 distanceInVecSquared(glm::vec2 start, glm::vec2 end);
-static glm::vec3 distanceInVecSquared(glm::vec3 start, glm::vec3 end);
+//pythagoreon theorem with two values.
+float pythagoreon(float x, float y);
 
-static glm::vec2 center(glm::vec2 vertices[]);
-static glm::vec3 center(glm::vec3 vertices[]);
+//pythagoreon theorem with two values.
+float pythagoreon(float x, float y, float z);
 
-static float toValueLinear(float currentValue, float toValue, float speed);
-static float toValueLinear(float currentValue, float toValue, float speed, float delta);
-static float toValueExponential(float currentValue, float toValue, float speed);
-static float toValueExponential(float currentValue, float toValue, float speed, float delta);
 
-static float toValueDistance(float currentValue, float toValue, float speed);
-static float toValueDistance(float currentValue, float toValue, float speed, float delta);
+//distance of x components to a 2d vector.
+float distanceOfX(glm::vec2 start, glm::vec2 end);
 
+//distance of x components to a 3d vector.
+float distanceOfX(glm::vec3 start, glm::vec3 end);
+
+//distance of y components to a 2d vector.
+float distanceOfY(glm::vec2 start, glm::vec2 end);
+
+//distance of y components to a 3d vector.
+float distanceOfY(glm::vec3 start, glm::vec3 end);
+
+//distance of z components.
+float distanceOfZ(glm::vec3 start, glm::vec3 end);
+
+
+//returns a single float from two 2d vectors and their distances.
+float distanceInFloat(glm::vec2 start, glm::vec2 end);
+
+//returns a single float from two 3d vectors and their distances.
+float distanceInFloat(glm::vec3 start, glm::vec3 end);
+
+
+//returns a 2d vector from two 2d vectors and their distances.
+glm::vec2 distanceInVec(glm::vec2 start, glm::vec2 end);
+
+//returns a 3d vector from two 3d vectors and their distances.
+glm::vec3 distanceInVec(glm::vec3 start, glm::vec3 end);
+
+
+//distance of x components to a 2d vector.
+float distanceOfXSquared(glm::vec2 start, glm::vec2 end);
+
+//distance of x components to a 3d vector.
+float distanceOfXSquared(glm::vec3 start, glm::vec3 end);
+
+
+//distance of y components to a 2d vector.
+float distanceOfYSquared(glm::vec2 start, glm::vec2 end);
+
+//distance of y components to a 3d vector.
+float distanceOfYSquared(glm::vec3 start, glm::vec3 end);
+
+
+//distance of z components.
+float distanceOfZSquared(glm::vec3 start, glm::vec3 end);
+
+
+//returns a single float from two 2d vectors and their distances.
+float distanceInFloatSquared(glm::vec2 start, glm::vec2 end);
+
+//returns a single float from two 3d vectors and their distances.
+float distanceInFloatSquared(glm::vec3 start, glm::vec3 end);
+
+
+//returns a 2d vector from two 2d vectors and their distances.
+glm::vec2 distanceInVecSquared(glm::vec2 start, glm::vec2 end);
+
+//returns a 3d vector from two 3d vectors and their distances.
+glm::vec3 distanceInVecSquared(glm::vec3 start, glm::vec3 end);
+
+
+//finds the center vector from a given number of vertices.
+glm::vec2 center(glm::vec2 vertices[]);
+
+//finds the center vector from a given number of vertices.
+glm::vec3 center(glm::vec3 vertices[]);
+
+
+//linear growth or decay towards a destination.
+float toValueLinear(float currentValue, float toValue, float speed, float delta = 1);
+
+//returns time it will take to reach the specified value in a linear approach.
+float toValueLinearTime(float currentValue, float toValue, float speed, float delta);
+
+
+//exponential growth or decay towards a destination. The growth or decay decays as it
+//approaches the intended value.
+float toValueExp(float currentValue, float toValue, float speed, float delta = 1);

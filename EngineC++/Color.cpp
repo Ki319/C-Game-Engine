@@ -1,10 +1,5 @@
 #include "Color.h"
 
-Color::Color(int red, int green, int blue, int alpha)
-{
-	setColor(red / 255.0f, green / 255.0f, blue / 255.0f, alpha / 255.0f);
-}
-
 /**
 * Initiate a 4 value color
 * red : 0 - 1

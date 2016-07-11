@@ -48,16 +48,6 @@ float clamp(float value, float clampAtMin, float clampAtMax)
 	return value;
 }
 
-bool isNegative(int value)
-{
-	return value < 0;
-}
-
-bool isNegative(float value)
-{
-	return value < 0;
-}
-
 float log(float base, float value)
 {
 	return log(value) / log(base);
@@ -194,36 +184,20 @@ glm::vec3 center(glm::vec3 vertices[])
 	return glm::vec3(totalX / sizeof(vertices), totalY / sizeof(vertices), totalZ / sizeof(vertices));
 }
 
-float toValueLinear(float currentValue, float toValue, float speed)
-{
-	if (currentValue > toValue)
-		return std::fmaxf(toValue, currentValue - speed);
-	return std::fminf(toValue, currentValue + speed);
-}
 
-float toValueLinear(float currentValue, float toValue, float speed, float delta)
+float toValueLinear(float currentValue, float toValue, float speed, float delta = 1)
 {
 	if (currentValue > toValue)
 		return std::fmaxf(toValue, currentValue - speed * delta);
 	return std::fminf(toValue, currentValue + speed * delta);
 }
 
-float toValueExponential(float currentValue, float toValue, float speed)
-{
-	return currentValue + (currentValue - toValue) / speed;
-}
-
-float toValueExponential(float currentValue, float toValue, float speed, float delta)
-{
-	return currentValue + (currentValue - toValue) / speed * delta;
-}
-
-float toValueDistance(float currentValue, float toValue, float speed)
-{
-	return (currentValue - toValue) / speed;
-}
-
-float toValueDistance(float currentValue, float toValue, float speed, float delta)
+float toValueLinearTime(float currentValue, float toValue, float speed, float delta = 1)
 {
 	return (currentValue - toValue) / speed * delta;
+}
+
+float toValueExp(float currentValue, float toValue, float speed, float delta = 1)
+{
+	return currentValue + (toValue - currentValue) / speed * delta;
 }

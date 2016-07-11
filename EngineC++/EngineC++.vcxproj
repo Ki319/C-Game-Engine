@@ -110,9 +110,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Font.cpp" />
+    <ClCompile Include="TextureAtlas.cpp" />
+    <ClCompile Include="TextureManager.cpp" />
+    <ClCompile Include="Window.cpp" />
     <ClCompile Include="Draw.cpp" />
     <ClCompile Include="Gui.cpp" />
+    <ClCompile Include="IOUtil.cpp" />
     <ClCompile Include="OpenGL.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="Color.cpp" />
@@ -124,11 +128,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Application.h" />
+    <ClInclude Include="Font.h" />
+    <ClInclude Include="IOUtil.h" />
+    <ClInclude Include="TextureAtlas.h" />
+    <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="Window.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Draw.h" />
     <ClInclude Include="Gui.h" />
-    <ClInclude Include="IOUtil.h" />
     <ClInclude Include="MathUtil.h" />
     <ClInclude Include="OpenGL.h" />
     <ClInclude Include="Settings.h" />

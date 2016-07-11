@@ -39,42 +39,22 @@ void TexCoord::setMaxV(float v)
 	maxV = v;
 }
 
-float TexCoord::getMinU()
+float TexCoord::getMinU(int animationID)
 {
 	return minU;
 }
 
-float TexCoord::getMinV()
+float TexCoord::getMinV(int animationID)
 {
 	return minV;
 }
 
-float TexCoord::getMaxU()
+float TexCoord::getMaxU(int animationID)
 {
 	return maxU;
 }
 
-float TexCoord::getMaxV()
-{
-	return maxV;
-}
-
-float TexCoord::getMinU(int animationID)
-{
-	return getMinU();
-}
-
-float TexCoord::getMinV(int animationID)
-{
-	return getMinV();
-}
-
-float TexCoord::getMaxU(int animationID)
-{
-	return getMaxU();
-}
-
 float TexCoord::getMaxV(int animationID)
 {
-	return getMaxV();
+	return maxV;
 }
