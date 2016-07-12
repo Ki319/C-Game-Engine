@@ -1,3 +1,5 @@
+#pragma once
+
 struct TexCoord
 {
 public:
@@ -9,10 +11,10 @@ public:
 	void setMinV(float v);
 	void setMaxU(float u);
 	void setMaxV(float v);
-	float getMinU(int animationId);
-	float getMinV(int animationId);
-	float getMaxU(int animationId);
-	float getMaxV(int animationId);
+	float getMinU(int animationId = 0);
+	float getMinV(int animationId = 0);
+	float getMaxU(int animationId = 0);
+	float getMaxV(int animationId = 0);
 
 private:
 	float minU, minV, maxU, maxV;

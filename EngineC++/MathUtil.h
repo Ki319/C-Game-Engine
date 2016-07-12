@@ -1,3 +1,5 @@
+#pragma once
+
 #include "pch.h"
 
 //find if a point given in a vector of two values is within a rectangle
@@ -111,7 +113,7 @@ glm::vec3 center(glm::vec3 vertices[]);
 float toValueLinear(float currentValue, float toValue, float speed, float delta = 1);
 
 //returns time it will take to reach the specified value in a linear approach.
-float toValueLinearTime(float currentValue, float toValue, float speed, float delta);
+float toValueLinearTime(float currentValue, float toValue, float speed, float delta = 1);
 
 
 //exponential growth or decay towards a destination. The growth or decay decays as it

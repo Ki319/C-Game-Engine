@@ -1,4 +1,5 @@
 #pragma once
+
 struct Color
 {
 private:
@@ -14,7 +15,7 @@ public:
 	//green : 0 - 1
 	//blue : 0 - 1
 	//alpha : 0 - 1
-	Color(float red, float green, float blue, float alpha);
+	Color(float red = 1, float green = 1, float blue = 1, float alpha = 1);
 
 	//returns red
 	float getRed();

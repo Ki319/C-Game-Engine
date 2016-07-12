@@ -120,7 +120,7 @@ void Window::cursorMove(double mouseX, double mouseY)
 	mousePosition.mouseY = mouseY * heightScaled();
 }
 
-void Window::cursorClick(int button, int action)
+void Window::mouseClick(int button, int action)
 {
 	switch (action)
 	{
@@ -135,7 +135,7 @@ void Window::cursorClick(int button, int action)
 	}
 }
 
-void Window::cursorScroll(double xOffset, double yOffset)
+void Window::mouseScroll(double xOffset, double yOffset)
 {
 	currentGui->mouseScroll(xOffset, yOffset);
 }
@@ -236,17 +236,18 @@ bool Window::setup()
 
 void Window::setEvents()
 {
-	glfwSetCursorEnterCallback(windowInstance, &this->cursorBounds);
-	glfwSetCursorPosCallback(windowInstance, &this->cursorPos);
-	glfwSetMouseButtonCallback(windowInstance, &this->cursorButton);
-	glfwSetScrollCallback(windowInstance, &this->cursorScroll);
-	glfwSetKeyCallback(windowInstance, &this->keyboard);
-	glfwSetWindowCloseCallback(windowInstance, &this->windowClose);
-	glfwSetWindowFocusCallback(windowInstance, &this->windowFocus);
-	glfwSetWindowIconifyCallback(windowInstance, &this->windowIconify);
-	glfwSetWindowPosCallback(windowInstance, &this->windowPos);
-	glfwSetWindowRefreshCallback(windowInstance, &this->windowRefresh);
-	glfwSetWindowSizeCallback(windowInstance, &this->windowSize);
+	glfwSetWindowUserPointer(windowInstance, this);
+	glfwSetCursorEnterCallback(windowInstance, &glfwCursorBounds);
+	glfwSetCursorPosCallback(windowInstance, &glfwCursorPos);
+	glfwSetMouseButtonCallback(windowInstance, &glfwMouseButton);
+	glfwSetScrollCallback(windowInstance, &glfwMouseScroll);
+	glfwSetKeyCallback(windowInstance, &glfwKeyboard);
+	glfwSetWindowCloseCallback(windowInstance, &glfwWindowClose);
+	glfwSetWindowFocusCallback(windowInstance, &glfwWindowFocus);
+	glfwSetWindowIconifyCallback(windowInstance, &glfwWindowIconify);
+	glfwSetWindowPosCallback(windowInstance, &glfwWindowPos);
+	glfwSetWindowRefreshCallback(windowInstance, &glfwWindowRefresh);
+	glfwSetWindowSizeCallback(windowInstance, &glfwWindowSize);
 }
 
 void Window::updateSize()
@@ -447,4 +448,90 @@ void Window::setupShiftKeys()
 	shiftKeys[(int)'.'] = (int)'>';
 	shiftKeys[(int)'/'] = (int)'?';
 	shiftKeys[(int)'\\'] = (int)'|';
+}
+
+Gui::Gui(Window *application) :
+	window(application), parent(nullptr), ticksExisted(0) {}
+
+Gui::Gui(Gui *gui)
+{
+	window = gui->window;
+	parent = gui;
+	ticksExisted = 0;
+}
+
+void Gui::update(float delta)
+{
+	ticksExisted += delta;
+}
+
+Gui *Gui::getParent()
+{
+	return parent;
+}
+
+void glfwCursorBounds(GLFWwindow *window, int entered)
+{
+	Window *application = static_cast<Window *>(glfwGetWindowUserPointer(window));
+	application->cursorMoveBounds(entered == GL_TRUE);
+}
+
+void glfwCursorPos(GLFWwindow *window, double xpos, double ypos)
+{
+	Window *application = static_cast<Window *>(glfwGetWindowUserPointer(window));
+	application->cursorMove(xpos, ypos);
+}
+
+void glfwMouseButton(GLFWwindow *window, int button, int action, int mods)
+{
+	Window *application = static_cast<Window *>(glfwGetWindowUserPointer(window));
+	application->mouseClick(button, action);
+}
+
+void glfwMouseScroll(GLFWwindow *window, double xoffset, double yoffset)
+{
+	Window *application = static_cast<Window *>(glfwGetWindowUserPointer(window));
+	application->mouseScroll(xoffset, yoffset);
+}
+
+void glfwKeyboard(GLFWwindow *window, int key, int scancode, int action, int mods)
+{
+	Window *application = static_cast<Window *>(glfwGetWindowUserPointer(window));
+	application->keyboardClick(key, action, mods);
+}
+
+void glfwWindowClose(GLFWwindow *window)
+{
+	Window *application = static_cast<Window *>(glfwGetWindowUserPointer(window));
+	application->windowClose();
+}
+
+void glfwWindowFocus(GLFWwindow *window, int focused)
+{
+	Window *application = static_cast<Window *>(glfwGetWindowUserPointer(window));
+	application->windowFocus(focused == GL_TRUE);
+}
+
+void glfwWindowIconify(GLFWwindow *window, int iconified)
+{
+	Window *application = static_cast<Window *>(glfwGetWindowUserPointer(window));
+	application->windowIconify(iconified == GL_TRUE);
+}
+
+void glfwWindowPos(GLFWwindow *window, int xpos, int ypos)
+{
+	Window *application = static_cast<Window *>(glfwGetWindowUserPointer(window));
+	application->windowPos(xpos, ypos);
+}
+
+void glfwWindowRefresh(GLFWwindow *window)
+{
+	Window *application = static_cast<Window *>(glfwGetWindowUserPointer(window));
+	application->windowRefresh();
+}
+
+void glfwWindowSize(GLFWwindow *window, int width, int height)
+{
+	Window *application = static_cast<Window *>(glfwGetWindowUserPointer(window));
+	application->windowSize(width, height);
 }

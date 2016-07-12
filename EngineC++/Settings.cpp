@@ -17,12 +17,12 @@ int Settings::getNextWindow()
 
 fs::path Settings::getResourcePath()
 {
-	resourcePath;
+	return resourcePath;
 }
 
 fs::path Settings::getTexturePath()
 {
-	resourcePath;
+	return resourcePath;
 }
 
 fs::path Settings::getModelPath()

@@ -1,18 +1,8 @@
 #include "Font.h"
 
-Font::Font()
-{
-
-}
-
-Font::~Font()
-{
-
-}
-
 char *Font::load(fs::path pathLoc)
 {
-	char *data;
+	char *data = nullptr;
 	return data;
 }
 
@@ -23,14 +13,13 @@ CharData Font::getCharData(char letter)
 	{
 		return it->second;
 	}
-	CharData data = CharData();
-	data.width = -1;
-	return data;
+	return CharData();
 }
 
-void Font::drawString(std::string whatchars, double x, double y, double z, double pointFont)
+void Font::drawString(std::string whatchars, double x, double y, double z, float pointFont)
 {
 	CharData letter;
+	char pastLetter;
 	int i;
 	double width;
 	double xOffset;
@@ -38,21 +27,26 @@ void Font::drawString(std::string whatchars, double x, double y, double z, doubl
 	glBegin(GL_QUADS);
 	for (i = 0; i < whatchars.length(); i++)
 	{
-		letter = getCharData(whatchars.at(i));
-		if (letter.width != -1)
+		letter = getCharData(whatchars[i]);
+		if (letter.getWidth() != -1)
 		{
 			width = letter.getWidth() * pointFont;
 			xOffset = letter.getXOffset() * pointFont;
+			if (i > 0)
+			{
+				xOffset += letter.get(pastLetter) * pointFont;
+			}
 			yOffset = letter.getYOffset() * pointFont;
-			if (whatchars.at(i) != ' ')
+			if (whatchars[i] != ' ')
 				rectTex(x + xOffset, y + yOffset, x + width + xOffset, y + letter.getHeight() * pointFont + yOffset, z, letter.getTexture());
 			x += letter.getAdvance() * pointFont;
+			pastLetter = whatchars[i];
 		}
 	}
 	glEnd();
 }
 
-void Font::drawAlignedString(std::string whatchars, double x, double y, double z, double pointFont, int alignment)
+void Font::drawAlignedString(std::string whatchars, double x, double y, double z, float pointFont, int alignment)
 {
 	switch (alignment)
 	{
@@ -86,7 +80,7 @@ void Font::drawAlignedFittedString(std::string whatchars, double x, double y, do
 	drawString(whatchars, x, y, z, pointFont);
 }
 
-void Font::drawColorString(std::string whatchars, double x, double y, double z, double pointFont, Color rightColor)
+void Font::drawColorString(std::string whatchars, double x, double y, double z, float pointFont, Color rightColor)
 {
 	double textWidth = getTextWidth(whatchars, pointFont);
 	double redShift = (rightColor.getRed() - getRed()) / textWidth;
@@ -94,7 +88,7 @@ void Font::drawColorString(std::string whatchars, double x, double y, double z, 
 	double blueShift = (rightColor.getBlue() - getBlue()) / textWidth;
 	double alphaShift = (rightColor.getAlpha() - getAlpha()) / textWidth;
 
-	CharData pastLetter;
+	char pastLetter;
 	CharData letter;
 	int i;
 	double width = 0;
@@ -103,26 +97,26 @@ void Font::drawColorString(std::string whatchars, double x, double y, double z, 
 	glBegin(GL_QUADS);
 	for (i = 0; i < whatchars.length(); i++)
 	{
-		letter = getCharData(whatchars.at(i));
-		if (letter.width != -1)
+		letter = getCharData(whatchars[i]);
+		if (letter.getWidth() != -1)
 		{
 			width = letter.getWidth() * pointFont;
 			xOffset = letter.getXOffset() * pointFont;
-			if (pastLetter.width != -1)
+			if (i > 0)
 			{
-				xOffset += letter.getKerning().get(pastLetter) * pointFont;
+				xOffset += letter.get(pastLetter) * pointFont;
 			}
 			yOffset = letter.getYOffset() * pointFont;
-			if (whatchars.at(i) != ' ')
+			if (whatchars[i] != ' ')
 				rectLRTex(x + xOffset, y + yOffset, x + width + xOffset, y + letter.getHeight() * pointFont + yOffset, z, Color(getRed() + (redShift * width), getGreen() + (greenShift * width), getBlue() + (blueShift * width), getAlpha() + (alphaShift * width)), letter.getTexture());
 			x += letter.getAdvance() * pointFont;
-			pastLetter = letter;
+			pastLetter = whatchars[i];
 		}
 	}
 	glEnd();
 }
 
-void Font::drawAlignedCString(std::string whatchars, double x, double y, double z, double pointFont, int alignment, Color rightColor)
+void Font::drawAlignedCString(std::string whatchars, double x, double y, double z, float pointFont, int alignment, Color rightColor)
 {
 	switch (alignment)
 	{
@@ -151,16 +145,65 @@ void Font::drawAlignedFCString(std::string whatchars, double x, double y, double
 	drawColorString(whatchars, x, y, z, pointFont, rightColor);
 }
 
-CharData::CharData() {}
+float Font::getTextWidth(std::string whatchars)
+{
+	float totalWidth = 0;
+	CharData letter;
+
+	for (int i = 0; i < whatchars.length(); i++)
+	{
+		letter = getCharData(whatchars[i]);
+		if (letter.getWidth() != -1)
+		{
+			totalWidth += letter.getAdvance();
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	return totalWidth;
+}
+
+float Font::getTextWidth(std::string whatchars, float pointFont)
+{
+	return getTextWidth(whatchars) * pointFont;
+}
+
+float Font::getTextHeight(std::string whatchars)
+{
+	float largestHeight = 0;
+	CharData letter;
+
+	for (int i = 0; i < whatchars.length(); i++)
+	{
+		letter = getCharData(whatchars[i]);
+		if (letter.getWidth() != -1)
+		{
+			largestHeight = fmax(letter.getHeight() + letter.getYOffset(), largestHeight);
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	return largestHeight;
+}
+
+float Font::getTextHeight(std::string whatchars, float pointFont)
+{
+	return getTextHeight(whatchars) * pointFont;
+}
+
+CharData::CharData() 
+{
+	kernings = std::map<char, float>();
+	width = height = xOffset = yOffset = xadvance = -1;
+}
 
 TexCoord CharData::getTexture()
 {
 	return texture;
-}
-
-Kerning CharData::getKerning()
-{
-	return kerning;
 }
 
 float CharData::getWidth()
@@ -188,12 +231,12 @@ float CharData::getAdvance()
 	return xadvance;
 }
 
-void Kerning::add(CharData otherChar, float adjustment)
+void CharData::add(char otherChar, float adjustment)
 {
 	kernings[otherChar] = adjustment;
 }
 
-float Kerning::get(CharData otherChar)
+float CharData::get(char otherChar)
 {
 	return kernings[otherChar];
 }

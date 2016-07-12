@@ -1,6 +1,6 @@
 #pragma once
+
 #include "Texture.h"
-#include "TextureManager.h"
 
 class TextureAtlas : public Texture
 {

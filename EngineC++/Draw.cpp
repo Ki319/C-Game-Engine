@@ -89,7 +89,7 @@ void Engine::rectTBUV(double topLeftX, double topLeftY, double bottomRightX, dou
 	glVertex(bottomRightX, bottomRightY, z, u1, v1);
 }
 
-void Engine::rectTex(double topLeftX, double topLeftY, double bottomRightX, double bottomRightY, double z, TexCoord texture, int animationID = 0)
+void Engine::rectTex(double topLeftX, double topLeftY, double bottomRightX, double bottomRightY, double z, TexCoord texture, int animationID)
 {
 	float u = texture.getMinU(animationID);
 	float u1 = texture.getMaxU(animationID);
@@ -102,7 +102,7 @@ void Engine::rectTex(double topLeftX, double topLeftY, double bottomRightX, doub
 	glVertex(bottomRightX, topLeftY, z, u1, v);
 }
 
-void Engine::rectLRTex(double topLeftX, double topLeftY, double bottomRightX, double bottomRightY, double z, Color shiftToColor, TexCoord texture, int animationID = 0)
+void Engine::rectLRTex(double topLeftX, double topLeftY, double bottomRightX, double bottomRightY, double z, Color shiftToColor, TexCoord texture, int animationID)
 {
 	float u = texture.getMinU(animationID);
 	float u1 = texture.getMaxU(animationID);
@@ -115,7 +115,7 @@ void Engine::rectLRTex(double topLeftX, double topLeftY, double bottomRightX, do
 	glVertex(bottomRightX, topLeftY, z, u1, v);
 }
 
-void Engine::rectTBTex(double topLeftX, double topLeftY, double bottomRightX, double bottomRightY, double z, Color shiftToColor, TexCoord texture, int animationID = 0)
+void Engine::rectTBTex(double topLeftX, double topLeftY, double bottomRightX, double bottomRightY, double z, Color shiftToColor, TexCoord texture, int animationID)
 {
 	float u = texture.getMinU(animationID);
 	float u1 = texture.getMaxU(animationID);
@@ -128,7 +128,7 @@ void Engine::rectTBTex(double topLeftX, double topLeftY, double bottomRightX, do
 	glVertex(bottomRightX, bottomRightY, z, u1, v1);
 }
 
-void Engine::arc(double circleX, double circleY, double z, double radius, int lineCount, double thickness, double startAngle = 0, double endAngle = TWO_PI)
+void Engine::arc(double circleX, double circleY, double z, double radius, int lineCount, double thickness, double startAngle, double endAngle)
 {
 	double theta = (endAngle - startAngle) / (lineCount);
 	double x = radius * cos(startAngle);
@@ -146,7 +146,7 @@ void Engine::arc(double circleX, double circleY, double z, double radius, int li
 	}
 }
 
-void Engine::arc(double circleX, double circleY, double z, double radius, int lineCount, double thickness, Color endColor, double startAngle = 0, double endAngle = TWO_PI)
+void Engine::arc(double circleX, double circleY, double z, double radius, int lineCount, double thickness, Color endColor, double startAngle, double endAngle)
 {
 	double deltaTheta = (endAngle - startAngle) / lineCount;
 
@@ -172,7 +172,7 @@ void Engine::arc(double circleX, double circleY, double z, double radius, int li
 	glColor(getRed() - rShift * lineCount, getGreen() - gShift * lineCount, getBlue() - bShift * lineCount, getAlpha() - aShift * lineCount);
 }
 
-void Engine::circle(double circleX, double circleY, double z, double radius, int lineCount, double startAngle = 0, double endAngle = TWO_PI)
+void Engine::circle(double circleX, double circleY, double z, double radius, int lineCount, double startAngle, double endAngle)
 {
 	double deltaTheta = (endAngle - startAngle) / lineCount;
 
@@ -186,7 +186,7 @@ void Engine::circle(double circleX, double circleY, double z, double radius, int
 	glEnd();
 }
 
-void Engine::circle(double circleX, double circleY, double z, double radius, int lineCount, Color innerColor, double startAngle = 0, double endAngle = TWO_PI)
+void Engine::circle(double circleX, double circleY, double z, double radius, int lineCount, Color innerColor, double startAngle, double endAngle)
 {
 	double deltaTheta = (endAngle - startAngle) / lineCount;
 
@@ -204,7 +204,7 @@ void Engine::circle(double circleX, double circleY, double z, double radius, int
 	glEnd();
 }
 
-void Engine::circle(double circleX, double circleY, double z, double radius, int lineCount, TexCoord texture, int animationID = 0, double startAngle = 0, double endAngle = TWO_PI)
+void Engine::circle(double circleX, double circleY, double z, double radius, int lineCount, TexCoord texture, int animationID, double startAngle, double endAngle)
 {
 	float u = texture.getMinU(animationID);
 	float v = texture.getMinV(animationID);
@@ -228,7 +228,7 @@ void Engine::circle(double circleX, double circleY, double z, double radius, int
 	glEnd();
 }
 
-void Engine::circle(double circleX, double circleY, double z, double radius, int lineCount, Color innerColor, TexCoord texture, int animationID = 0, double startAngle = 0, double endAngle = TWO_PI)
+void Engine::circle(double circleX, double circleY, double z, double radius, int lineCount, Color innerColor, TexCoord texture, int animationID, double startAngle, double endAngle)
 {
 	float u = texture.getMinU(animationID);
 	float v = texture.getMinV(animationID);

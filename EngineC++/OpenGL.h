@@ -1,13 +1,12 @@
+#pragma once
+
 #include "pch.h"
 #include "Texture.h"
 #include "Color.h"
 #include "TexCoord.h"
-#include "Rectangle.h"
 
 namespace Engine
 {
-	Color currentColor = Color(255, 255, 255, 255);
-
 	void glBlend(int src = GL_SRC_ALPHA, int output = GL_ONE_MINUS_SRC_ALPHA);
 	void glClearBuffers(int bufferClear = GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	void glDefaults();

@@ -1,9 +1,12 @@
+#pragma once
+
 #include "pch.h"
 #include "Settings.h"
-#include "Gui.h"
 #include "OpenGL.h"
 
 using namespace Engine;
+
+class Gui;
 
 struct Mouse
 {
@@ -33,10 +36,10 @@ public:
 	virtual void cursorMove(double mouseX, double mouseY);
 	
 	//Called when the a click action on the application is performed.
-	virtual void cursorClick(int button, int action);
+	virtual void mouseClick(int button, int action);
 	
 	//Called when the mouse scrolls on the scroll wheel.
-	virtual void cursorScroll(double xOffset, double yOffset);
+	virtual void mouseScroll(double xOffset, double yOffset);
 
 	
 	//Called when the keyboard is clicked.
@@ -254,61 +257,65 @@ private:
 
 	//Sets the events needed to manage the window and input.
 	void setEvents();
-
-	//the really sketchy way to manipulate GLFW and make it do things my way.
-
-	void cursorBounds(GLFWwindow *window, int entered)
-	{
-		cursorMoveBounds(entered == GL_TRUE);
-	}
-
-	void cursorPos(GLFWwindow *window, double xpos, double ypos)
-	{
-		cursorMove(xpos, ypos);
-	}
-
-	void cursorButton(GLFWwindow *window, int button, int action, int mods)
-	{
-		cursorClick(button, action);
-	}
-
-	void cursorScroll(GLFWwindow *window, double xoffset, double yoffset)
-	{
-		cursorScroll(xoffset, yoffset);
-	}
-
-	void keyboard(GLFWwindow *window, int key, int scancode, int action, int mods)
-	{
-		keyboardClick(key, action, mods);
-	}
-
-	void windowClose(GLFWwindow *window)
-	{
-		windowClose();
-	}
-
-	void windowFocus(GLFWwindow *window, int focused)
-	{
-		windowFocus(focused == GL_TRUE);
-	}
-
-	void windowIconify(GLFWwindow *window, int iconified)
-	{
-		windowIconify(iconified == GL_TRUE);
-	}
-
-	void windowPos(GLFWwindow *window, int xpos, int ypos)
-	{
-		windowPos(xpos, ypos);
-	}
-
-	void windowRefresh(GLFWwindow *window)
-	{
-		windowRefresh();
-	}
-
-	void windowSize(GLFWwindow *window, int width, int height)
-	{
-		windowSize(width, height);
-	}
 };
+
+class Gui
+{
+public:
+
+	Gui(Window *application);
+	Gui(Gui *gui);
+
+	virtual void update(float delta);
+
+	~Gui() {}
+
+	virtual void init() {}
+
+	virtual void render(float delta) {}
+
+	virtual void mouseClick(int button) {}
+	virtual void mouseHeld(int button) {}
+	virtual void mouseRelease(int button) {}
+	virtual void mouseScroll(float xOffset, float yOffset) {}
+
+	virtual int keyPressed(int key, int keyMods) { return 0; }
+	virtual int keyHeld(int key, int timesCalled, int keyMods) { return 0; }
+	virtual void keyRelease(int key, int keyMods) {}
+
+	virtual void reload() {}
+protected:
+
+	Window *window;
+	Gui *parent;
+
+	float ticksExisted;
+
+	Gui *getParent();
+
+	virtual void reinit() {}
+};
+
+//the really sketchy way to manipulate GLFW and make it do things my way.
+
+void glfwCursorBounds(GLFWwindow *window, int entered);
+
+void glfwCursorPos(GLFWwindow *window, double xpos, double ypos);
+
+void glfwMouseButton(GLFWwindow *window, int button, int action, int mods);
+
+void glfwMouseScroll(GLFWwindow *window, double xoffset, double yoffset);
+
+void glfwKeyboard(GLFWwindow *window, int key, int scancode, int action, int mods);
+
+void glfwWindowClose(GLFWwindow *window);
+
+void glfwWindowFocus(GLFWwindow *window, int focused);
+
+void glfwWindowIconify(GLFWwindow *window, int iconified);
+
+void glfwWindowPos(GLFWwindow *window, int xpos, int ypos);
+
+void glfwWindowRefresh(GLFWwindow *window);
+
+void glfwWindowSize(GLFWwindow *window, int width, int height);
