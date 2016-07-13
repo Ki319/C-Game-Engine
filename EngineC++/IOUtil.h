@@ -2,10 +2,6 @@
 
 #include "pch.h"
 
-char *convertToBytes(std::vector<char> byteList);
+bool readImage(std::string file,  int &width, int &height, bool &hasAlpha, GLubyte **data);
 
-std::string readCompressedFile(fs::path file);
-
-void createFileSafely(fs::path file);
-
-char *readStreamFully();
+bool writeImage(std::string file, int width, int height, GLubyte **data);

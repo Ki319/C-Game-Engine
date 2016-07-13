@@ -111,7 +111,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Font.cpp" />
-    <ClCompile Include="TextureAtlas.cpp" />
+    <ClCompile Include="AtlasTexture.cpp" />
+    <ClCompile Include="PackedImage.cpp" />
+    <ClCompile Include="Textures.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="Draw.cpp" />
     <ClCompile Include="IOUtil.cpp" />
@@ -128,7 +130,9 @@
   <ItemGroup>
     <ClInclude Include="Font.h" />
     <ClInclude Include="IOUtil.h" />
-    <ClInclude Include="TextureAtlas.h" />
+    <ClInclude Include="AtlasTexture.h" />
+    <ClInclude Include="PackedImage.h" />
+    <ClInclude Include="Textures.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Draw.h" />
@@ -147,6 +151,10 @@
     <Import Project="..\packages\glfw.3.1.2\build\native\glfw.targets" Condition="Exists('..\packages\glfw.3.1.2\build\native\glfw.targets')" />
     <Import Project="..\packages\boost.1.60.0.0\build\native\boost.targets" Condition="Exists('..\packages\boost.1.60.0.0\build\native\boost.targets')" />
     <Import Project="..\packages\glm.0.9.7.0\build\native\glm.targets" Condition="Exists('..\packages\glm.0.9.7.0\build\native\glm.targets')" />
+    <Import Project="..\packages\libpng.redist.1.6.23.1\build\native\libpng.redist.targets" Condition="Exists('..\packages\libpng.redist.1.6.23.1\build\native\libpng.redist.targets')" />
+    <Import Project="..\packages\zlib.v120.windesktop.msvcstl.dyn.rt-dyn.1.2.8.8\build\native\zlib.v120.windesktop.msvcstl.dyn.rt-dyn.targets" Condition="Exists('..\packages\zlib.v120.windesktop.msvcstl.dyn.rt-dyn.1.2.8.8\build\native\zlib.v120.windesktop.msvcstl.dyn.rt-dyn.targets')" />
+    <Import Project="..\packages\zlib.v140.windesktop.msvcstl.dyn.rt-dyn.1.2.8.8\build\native\zlib.v140.windesktop.msvcstl.dyn.rt-dyn.targets" Condition="Exists('..\packages\zlib.v140.windesktop.msvcstl.dyn.rt-dyn.1.2.8.8\build\native\zlib.v140.windesktop.msvcstl.dyn.rt-dyn.targets')" />
+    <Import Project="..\packages\libpng.1.6.23.1\build\native\libpng.targets" Condition="Exists('..\packages\libpng.1.6.23.1\build\native\libpng.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -158,5 +166,9 @@
     <Error Condition="!Exists('..\packages\glfw.3.1.2\build\native\glfw.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\glfw.3.1.2\build\native\glfw.targets'))" />
     <Error Condition="!Exists('..\packages\boost.1.60.0.0\build\native\boost.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost.1.60.0.0\build\native\boost.targets'))" />
     <Error Condition="!Exists('..\packages\glm.0.9.7.0\build\native\glm.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\glm.0.9.7.0\build\native\glm.targets'))" />
+    <Error Condition="!Exists('..\packages\libpng.redist.1.6.23.1\build\native\libpng.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\libpng.redist.1.6.23.1\build\native\libpng.redist.targets'))" />
+    <Error Condition="!Exists('..\packages\zlib.v120.windesktop.msvcstl.dyn.rt-dyn.1.2.8.8\build\native\zlib.v120.windesktop.msvcstl.dyn.rt-dyn.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\zlib.v120.windesktop.msvcstl.dyn.rt-dyn.1.2.8.8\build\native\zlib.v120.windesktop.msvcstl.dyn.rt-dyn.targets'))" />
+    <Error Condition="!Exists('..\packages\zlib.v140.windesktop.msvcstl.dyn.rt-dyn.1.2.8.8\build\native\zlib.v140.windesktop.msvcstl.dyn.rt-dyn.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\zlib.v140.windesktop.msvcstl.dyn.rt-dyn.1.2.8.8\build\native\zlib.v140.windesktop.msvcstl.dyn.rt-dyn.targets'))" />
+    <Error Condition="!Exists('..\packages\libpng.1.6.23.1\build\native\libpng.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\libpng.1.6.23.1\build\native\libpng.targets'))" />
   </Target>
 </Project>

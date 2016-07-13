@@ -2,6 +2,11 @@
 
 #include "pch.h"
 
+class Settings;
+
+//settings that the game is based off.
+Settings *currentSettings;
+
 class Settings
 {
 public:
@@ -14,6 +19,8 @@ public:
 	fs::path getTexturePath();
 	fs::path getModelPath();
 	fs::path getSoundPath();
+
+	int getMipmap();
 
 	void setNextWindow(int windowMode);
 

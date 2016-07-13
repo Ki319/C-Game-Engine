@@ -16,6 +16,9 @@ void Window::run()
 	if (glfwInit() || setup())
 		return;
 
+	if (isDebug())
+		Engine::loadTexturesDebug(currentSettings->getTexturePath(), (currentSettings->getTexturePath() /= "debug"));
+
 	init();
 	glDefaults();
 
@@ -27,10 +30,11 @@ void Window::run()
 		glfwMakeContextCurrent(windowInstance);
 
 		float delta = glfwGetTime();
-		glfwSetTime(0);
 
 		if (checkUpdateWindow())
 			break;
+
+		glfwSetTime(0);
 
 		glfwPollEvents();
 

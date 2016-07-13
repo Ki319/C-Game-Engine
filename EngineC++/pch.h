@@ -5,12 +5,13 @@
 #include <string>
 #include <cmath>
 #include <ctime>
+#include <GL\glew.h>
 #include <GLFW\glfw3.h>
-#include <GL\GL.h>
 #include <glm\vec2.hpp>
 #include <glm\vec4.hpp>
 #include <glm\vec3.hpp>
-#include <boost/filesystem.hpp>
+#include <boost\filesystem.hpp>
+#include <png.h>
 
 #define TWO_PI 6.28318530718f
 #define PI 3.14159265358f

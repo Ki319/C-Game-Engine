@@ -38,7 +38,7 @@ void Font::drawString(std::string whatchars, double x, double y, double z, float
 			}
 			yOffset = letter.getYOffset() * pointFont;
 			if (whatchars[i] != ' ')
-				rectTex(x + xOffset, y + yOffset, x + width + xOffset, y + letter.getHeight() * pointFont + yOffset, z, letter.getTexture());
+				Engine::rectTex(x + xOffset, y + yOffset, x + width + xOffset, y + letter.getHeight() * pointFont + yOffset, z, letter.getTexture());
 			x += letter.getAdvance() * pointFont;
 			pastLetter = whatchars[i];
 		}
@@ -83,10 +83,10 @@ void Font::drawAlignedFittedString(std::string whatchars, double x, double y, do
 void Font::drawColorString(std::string whatchars, double x, double y, double z, float pointFont, Color rightColor)
 {
 	double textWidth = getTextWidth(whatchars, pointFont);
-	double redShift = (rightColor.getRed() - getRed()) / textWidth;
-	double greenShift = (rightColor.getGreen() - getGreen()) / textWidth;
-	double blueShift = (rightColor.getBlue() - getBlue()) / textWidth;
-	double alphaShift = (rightColor.getAlpha() - getAlpha()) / textWidth;
+	double redShift = (rightColor.getRed() - Engine::getRed()) / textWidth;
+	double greenShift = (rightColor.getGreen() - Engine::getGreen()) / textWidth;
+	double blueShift = (rightColor.getBlue() - Engine::getBlue()) / textWidth;
+	double alphaShift = (rightColor.getAlpha() - Engine::getAlpha()) / textWidth;
 
 	char pastLetter;
 	CharData letter;
@@ -108,7 +108,15 @@ void Font::drawColorString(std::string whatchars, double x, double y, double z, 
 			}
 			yOffset = letter.getYOffset() * pointFont;
 			if (whatchars[i] != ' ')
-				rectLRTex(x + xOffset, y + yOffset, x + width + xOffset, y + letter.getHeight() * pointFont + yOffset, z, Color(getRed() + (redShift * width), getGreen() + (greenShift * width), getBlue() + (blueShift * width), getAlpha() + (alphaShift * width)), letter.getTexture());
+			{
+				Engine::rectLRTex(x + xOffset, y + yOffset, x + width + xOffset,
+					y + letter.getHeight() * pointFont + yOffset, z,
+					Color(Engine::getRed() + (redShift * width),
+						Engine::getGreen() + (greenShift * width),
+						Engine::getBlue() + (blueShift * width),
+						Engine::getAlpha() + (alphaShift * width)),
+					letter.getTexture());
+			}
 			x += letter.getAdvance() * pointFont;
 			pastLetter = whatchars[i];
 		}

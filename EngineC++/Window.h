@@ -3,6 +3,7 @@
 #include "pch.h"
 #include "Settings.h"
 #include "OpenGL.h"
+#include "Textures.h"
 
 using namespace Engine;
 
@@ -156,9 +157,6 @@ protected:
 	//and render
 	Gui *currentGui;
 
-	//settings that the game is based off.
-	Settings *currentSettings;
-
 	//position of the mouse
 	Mouse mousePosition;
 
@@ -168,6 +166,8 @@ protected:
 	//Called for generating the windowed version of the application.
 	virtual GLFWwindow *createWindow() = 0;
 
+	//WHEN DEVELOPING MAKE SURE THIS IS TRUE!
+	virtual bool isDebug() = 0;
 	
 	//Function that allows the user to change whether they want the default settings object,
 	//or anything that is a sub class of it.
