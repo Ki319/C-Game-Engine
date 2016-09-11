@@ -5,11 +5,11 @@
 class AtlasTexture : public Texture
 {
 public:
-	AtlasTexture();
-	~AtlasTexture();
+	Image load(fs::path fileLoc);
+	bool bind(std::string subtexture);
 
 protected:
-	std::map<std::string, TexCoord> textureMap = std::map<std::string, TexCoord>();
+	std::map<std::string, TexCoord> textures;
 	TexCoord currentTexture;
 
 };

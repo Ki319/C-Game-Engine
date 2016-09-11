@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pch.h"
+#include "stdafx.h"
 #include "Texture.h"
 #include "Color.h"
 #include "TexCoord.h"
@@ -29,8 +29,8 @@ namespace Engine
 	void glColor(double r, double g, double b, double a = 1);
 	void glColor(Color color);
 	Color getColor();
-	double getRed();
-	double getGreen();
-	double getBlue();
-	double getAlpha();
+	float getRed();
+	float getGreen();
+	float getBlue();
+	float getAlpha();
 }

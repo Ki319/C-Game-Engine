@@ -39,7 +39,7 @@ void Engine::glDefaults()
 
 void Engine::glSetup2d(glm::vec4 renderArea, GLdouble width, GLdouble height, GLdouble zScaleMax)
 {
-	glViewport(renderArea.x, renderArea.y, renderArea.z + renderArea.x, renderArea.w + renderArea.y);
+	glViewport((GLuint) renderArea.x, (GLuint) renderArea.y, (GLuint) (renderArea.z + renderArea.x), (GLuint) (renderArea.w + renderArea.y));
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(0, width, height, 0, -zScaleMax, zScaleMax);
@@ -49,7 +49,7 @@ void Engine::glSetup2d(glm::vec4 renderArea, GLdouble width, GLdouble height, GL
 
 void Engine::glSetup3d(glm::vec4 renderArea, float windowRatio, float fovy, float zNear, float zFar)
 {
-	glViewport(renderArea.x, renderArea.y, renderArea.z + renderArea.x, renderArea.w + renderArea.y);
+	glViewport((GLuint) renderArea.x, (GLuint) renderArea.y, (GLuint) (renderArea.z + renderArea.x), (GLuint) (renderArea.w + renderArea.y));
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	double ymax = zNear * tan(fovy * PI / 360.0);
@@ -130,7 +130,7 @@ void Engine::glVertex(double x, double y, double z, double u, double v, TexCoord
 void Engine::glColor(double r, double g, double b, double a)
 {
 	glColor4d(r, g, b, a);
-	getColor().setColor(r, g, b, a);
+	getColor().setColor((float) r, (float) g, (float) b, (float) a);
 }
 
 void Engine::glColor(Color color)
@@ -144,22 +144,22 @@ Color Engine::getColor()
 	return currentColor;
 }
 
-double Engine::getRed()
+float Engine::getRed()
 {
 	return getColor().getRed();
 }
 
-double Engine::getGreen()
+float Engine::getGreen()
 {
 	return getColor().getGreen();
 }
 
-double Engine::getBlue()
+float Engine::getBlue()
 {
 	return getColor().getBlue();
 }
 
-double Engine::getAlpha()
+float Engine::getAlpha()
 {
 	return getColor().getAlpha();
 }

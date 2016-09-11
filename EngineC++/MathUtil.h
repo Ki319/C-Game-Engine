@@ -1,16 +1,9 @@
 #pragma once
 
-#include "pch.h"
-
-template <class T> const T& max(const T &a, const T &b) 
-{
-	return (a<b) ? b : a;
-}
-
-template <class T> const T& min(const T &a, const T &b)
-{
-	return (a>b) ? b : a;
-}
+#include <cmath>
+#include <glm\vec2.hpp>
+#include <glm\vec3.hpp>
+#include <glm\vec4.hpp>
 
 //find if a point given in a vector of two values is within a rectangle
 //given by a x, y, width, and height.
@@ -40,7 +33,7 @@ float clamp(float value, float clampAtMin, float clampAtMax);
 
 
 //log function with a base value other than 10.
-float log(float base, float value);
+float logb(float base, float value);
 
 
 //pythagoreon theorem with two values.

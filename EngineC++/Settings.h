@@ -1,11 +1,6 @@
 #pragma once
 
-#include "pch.h"
-
-class Settings;
-
-//settings that the game is based off.
-Settings *currentSettings;
+#include <boost\filesystem.hpp>
 
 class Settings
 {
@@ -15,10 +10,10 @@ public:
 	~Settings();
 
 	int getNextWindow();
-	fs::path getResourcePath();
-	fs::path getTexturePath();
-	fs::path getModelPath();
-	fs::path getSoundPath();
+	boost::filesystem::path getResourcePath();
+	boost::filesystem::path getTexturePath();
+	boost::filesystem::path getModelPath();
+	boost::filesystem::path getSoundPath();
 
 	int getMipmap();
 
@@ -26,10 +21,12 @@ public:
 
 private:
 	int nextWindowMode;
-	fs::path resourcePath;
-	fs::path texturePath;
-	fs::path modelPath;
-	fs::path soundPath;
-
+	boost::filesystem::path resourcePath;
+	boost::filesystem::path texturePath;
+	boost::filesystem::path modelPath;
+	boost::filesystem::path soundPath;
 };
+
+//settings that the game is based off.
+extern Settings *currentSettings;
 

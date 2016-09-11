@@ -11,6 +11,16 @@ TexCoord::TexCoord(float u, float v, float u1, float v1)
 	maxV = v1;
 }
 
+TexCoord::TexCoord(float data[4], int aniData[2])
+{
+	minU = data[0];
+	minV = data[1];
+	maxU = data[2];
+	maxV = data[3];
+	width = aniData[0];
+	height = aniData[1];
+}
+
 void TexCoord::reduce(int width, int height)
 {
 	minU /= (float)width;
@@ -39,22 +49,30 @@ void TexCoord::setMaxV(float v)
 	maxV = v;
 }
 
-float TexCoord::getMinU(int animationID)
+float TexCoord::getMinU(char animationID)
 {
-	return minU;
+	if(animationID == 0)
+		return minU;
+	return ((maxU - minU) / width * (animationID % width));
 }
 
-float TexCoord::getMinV(int animationID)
+float TexCoord::getMinV(char animationID)
 {
-	return minV;
+	if(animationID == 0)
+		return minV;
+	return ((maxV - minV) / height * (animationID / width));
 }
 
-float TexCoord::getMaxU(int animationID)
+float TexCoord::getMaxU(char animationID)
 {
-	return maxU;
+	if(animationID == 0)
+		return maxU;
+	return ((maxU - minU) / width * ((animationID % width) + 1));
 }
 
-float TexCoord::getMaxV(int animationID)
+float TexCoord::getMaxV(char animationID)
 {
-	return maxV;
+	if(animationID == 0)
+		return maxV;
+	return ((maxV - minV) / height * ((animationID / width) + 1));
 }

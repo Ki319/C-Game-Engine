@@ -15,22 +15,22 @@ int Settings::getNextWindow()
 	return nextWindowMode;
 }
 
-fs::path Settings::getResourcePath()
+boost::filesystem::path Settings::getResourcePath()
 {
 	return resourcePath;
 }
 
-fs::path Settings::getTexturePath()
+boost::filesystem::path Settings::getTexturePath()
 {
 	return resourcePath;
 }
 
-fs::path Settings::getModelPath()
+boost::filesystem::path Settings::getModelPath()
 {
 	return modelPath;
 }
 
-fs::path Settings::getSoundPath()
+boost::filesystem::path Settings::getSoundPath()
 {
 	return soundPath;
 }

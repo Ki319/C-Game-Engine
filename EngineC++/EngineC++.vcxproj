@@ -80,7 +80,9 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>No</SDLCheck>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <AdditionalIncludeDirectories>C:\local\boost_1_61_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -112,6 +114,7 @@
   <ItemGroup>
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="AtlasTexture.cpp" />
+    <ClCompile Include="Image.cpp" />
     <ClCompile Include="PackedImage.cpp" />
     <ClCompile Include="Textures.cpp" />
     <ClCompile Include="Window.cpp" />
@@ -129,6 +132,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Font.h" />
+    <ClInclude Include="Image.h" />
     <ClInclude Include="IOUtil.h" />
     <ClInclude Include="AtlasTexture.h" />
     <ClInclude Include="PackedImage.h" />
@@ -139,7 +143,7 @@
     <ClInclude Include="MathUtil.h" />
     <ClInclude Include="OpenGL.h" />
     <ClInclude Include="Settings.h" />
-    <ClInclude Include="pch.h" />
+    <ClInclude Include="stdafx.h" />
     <ClInclude Include="TexCoord.h" />
     <ClInclude Include="Texture.h" />
   </ItemGroup>

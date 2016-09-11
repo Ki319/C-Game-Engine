@@ -1,10 +1,8 @@
 #pragma once
 
-#include "pch.h"
-#include "Color.h"
+#include "stdafx.h"
 #include "Draw.h"
 #include "OpenGL.h"
-#include "IOUtil.h"
 
 class Texture
 {
@@ -12,18 +10,19 @@ public:
 	Texture();
 	~Texture();
 
-	GLubyte *load(std::string filename, int &width, int &height, bool &hasAlpha);
+	virtual Image load(fs::path fileLoc);
 
 	void setTextureId(GLuint *tex);
 	GLuint *getTextureId();
 
-	int getMipmap();
+	virtual int getMipmap();
+	GLuint width();
+	GLuint height();
 
 protected:
 	GLuint *textureId;
-	GLubyte *image;
-	int width;
-	int height;
+	GLuint imageWidth;
+	GLuint imageHeight;
 };
 
 

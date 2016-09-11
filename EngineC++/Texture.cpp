@@ -3,9 +3,6 @@
 Texture::Texture() 
 {
 	textureId = nullptr;
-	image = nullptr;
-	width = 0;
-	height = 0;
 }
 
 Texture::~Texture()
@@ -15,6 +12,40 @@ Texture::~Texture()
 		glDeleteTextures(1, textureId);
 
 		delete textureId;
-		delete image;
 	}
+}
+
+Image Texture::load(fs::path fileLoc)
+{
+	Image image = Image();
+	readImage(fileLoc, image);
+
+	imageWidth = image.width();
+	imageHeight = image.height();
+	return image;
+}
+
+void Texture::setTextureId(GLuint *tex)
+{
+	textureId = tex;
+}
+
+GLuint *Texture::getTextureId()
+{
+	return textureId;
+}
+
+int Texture::getMipmap()
+{
+	return currentSettings->getMipmap();
+}
+
+GLuint Texture::width()
+{
+	return imageWidth;
+}
+
+GLuint Texture::height()
+{
+	return imageHeight;
 }

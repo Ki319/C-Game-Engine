@@ -1,7 +1,6 @@
 #pragma once
 
-#include "pch.h"
-#include "Settings.h"
+#include "stdafx.h"
 #include "OpenGL.h"
 #include "Textures.h"
 
@@ -44,7 +43,7 @@ public:
 
 	
 	//Called when the keyboard is clicked.
-	virtual void keyboardClick(int key, int action, int mods);
+	virtual void keyboardClick(int keyCode, int action);
 
 	
 	//Called anytime the windows size is adjusted.
@@ -100,14 +99,17 @@ public:
 	//Gets all currently activated mod keys.
 	int getModKeys();
 	
-	//Returns whether a key is being pressed (1) or not (0).
-	int getKey(int key);
+	//Returns whether a key is being pressed (GLFW_PRESS) or not (GLFW_RELEASE).
+	int getKeyState(int key);
 	
 	//Returns the key that is given when the shift key has been pressed.
 	int getKeyWithShift(int key);
-	
+
+	//Returns whether a mouse button is being pressed (GLFW_PRESS) or not (GLFW_RELEASE).
+	int getMouseState(int button);
+
 	//Returns true if the key being pressed is not a modifier key.
-	bool notModKey(int key);
+	bool notModifierKey(int key);
 
 	
 	//Returns the x position of the mouse.
@@ -151,7 +153,13 @@ protected:
 	//in vector format. First number is how long until the next call to the function
 	//keyPressed in Gui. Second number is how many times the function keyPressed has been
 	//called since the first time.
-	std::map<int, glm::vec2*> keyboardPress = std::map<int, glm::vec2*>();
+	std::map<int, glm::vec2> keyboard = std::map<int, glm::vec2>();
+
+	//the map of all mouse button active, the value returned from a mouse button gives four
+	//values in vector format. First number is the first x coordinate. The second number
+	//is the first y coordinate. The third number is the delta x from the last update.
+	// The fourth number is the delta y from the last update.
+	std::map<int, glm::vec4> mouse = std::map<int, glm::vec4>();
 
 	//the current gui that recieves calls for a variety of things including input, update,
 	//and render
@@ -166,8 +174,8 @@ protected:
 	//Called for generating the windowed version of the application.
 	virtual GLFWwindow *createWindow() = 0;
 
-	//WHEN DEVELOPING MAKE SURE THIS IS TRUE!
-	virtual bool isDebug() = 0;
+	//Called for getting the monitor that the application.
+	virtual GLFWmonitor* getMonitor();
 	
 	//Function that allows the user to change whether they want the default settings object,
 	//or anything that is a sub class of it.
@@ -185,20 +193,20 @@ protected:
 
 
 	//Called for adding a mod key to the current list.
-	void addModKey(int key);
+	void addModifierKey(int key);
 
 	//Called for removing a mod key from the current list.
-	void removeModKey(int key);
+	void removeModifierKey(int key);
 
 
 	//Called as an easy way to generate a centered window for the user.
-	GLFWwindow *createAndCenter(int width, int height, GLFWmonitor *monitor);
+	GLFWwindow *createAndCenter(int width, int height);
 
 private:
 
 	//The list of all mod keys available on the keyboard.
 	//These are shift, control, alt, and super (which I'm not exactly sure of).
-	static std::vector<int> modKeys;
+	static std::vector<int> modifierKeys;
 
 	//The map of all keys and their appropriate keys that correspond with them
 	//when the shift key is held down.
@@ -242,11 +250,10 @@ private:
 
 
 	//The currently activated modifier keys that are being pressed down.
-	int currentModKeys;
+	int currentModifierKeys;
 
 	//The current window mode, 0 -> windowed, 1 -> borderless, 2 -> fullscreen
 	int currentWindowMode;
-
 
 	//Called after the window mode is updated, transfers all textures and data that
 	//are tied to the window to the next window.
@@ -254,6 +261,9 @@ private:
 
 	//Called from the run function to manage the keys that are currently being pressed.
 	void handleKeyInput(float delta);
+
+	//Called from the run function to manage the mouse buttons that are currently active.
+	void handleMouseInput(float delta);
 
 	//Sets the events needed to manage the window and input.
 	void setEvents();
@@ -274,14 +284,14 @@ public:
 
 	virtual void render(float delta) {}
 
-	virtual void mouseClick(int button) {}
-	virtual void mouseHeld(int button) {}
-	virtual void mouseRelease(int button) {}
+	virtual bool mouseClick(int button, float x, float y) { return false; }
+	virtual bool mouseHeld(int button, float x, float y, float deltaX, float deltaY) { return false; }
+	virtual void mouseRelease(int button, float x, float y, float deltaX, float deltaY) {}
 	virtual void mouseScroll(float xOffset, float yOffset) {}
 
-	virtual int keyPressed(int key, int keyMods) { return 0; }
-	virtual int keyHeld(int key, int timesCalled, int keyMods) { return 0; }
-	virtual void keyRelease(int key, int keyMods) {}
+	virtual float keyPressed(int key, int keyMods) { return 0.0f; }
+	virtual float keyHeld(int key, int timesCalled, int keyMods) { return 120000.0f; }
+	virtual void keyRelease(int key, int timesCalled, int keyMods) {}
 
 	virtual void reload() {}
 protected:
@@ -295,6 +305,9 @@ protected:
 
 	virtual void reinit() {}
 };
+
+//Getting a window object from a GLFWwindow *instance
+Window *getApplication(GLFWwindow *window);
 
 //the really sketchy way to manipulate GLFW and make it do things my way.
 

@@ -1,7 +1,14 @@
 #pragma once
 
-#include "pch.h"
+#include <png.h>
+#include <boost\filesystem.hpp>
+#include <boost\algorithm\string.hpp>
+#include "Image.h"
 
-bool readImage(std::string file,  int &width, int &height, bool &hasAlpha, GLubyte **data);
+bool read(boost::filesystem::path file, std::string &content);
 
-bool writeImage(std::string file, int width, int height, GLubyte **data);
+bool readLines(boost::filesystem::path file, std::vector<std::string> &lines);
+
+bool readImage(boost::filesystem::path file, Image &image);
+
+bool writeImage(boost::filesystem::path file, Image image);

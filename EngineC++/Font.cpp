@@ -1,9 +1,95 @@
 #include "Font.h"
 
-char *Font::load(fs::path pathLoc)
+CharData::CharData(int charData[])
 {
-	char *data = nullptr;
-	return data;
+	width = (float) charData[3];
+	height = (float) charData[4];
+	xOffset = (float) charData[5];
+	yOffset = (float) charData[6];
+	xadvance = (float) charData[7];
+}
+
+void CharData::reduce(int largestWidth, int largestHeight)
+{
+	width /= (float) largestWidth;
+	height /= (float) largestHeight;
+	xOffset /= (float) largestWidth;
+	yOffset /= (float) largestHeight;
+	xadvance /= (float) largestWidth;
+}
+
+void CharData::add(char otherChar, float adjustment)
+{
+	kernings[otherChar] = adjustment;
+}
+
+float CharData::get(char otherChar)
+{
+	return kernings[otherChar];
+}
+
+Image Font::load(fs::path fileLoc)
+{
+	Image image = Texture::load(fileLoc);
+	if (image.imageData == nullptr)
+		return image;
+
+	fs::path path = fileLoc.replace_extension("font");
+	std::vector<std::string> lines;
+	std::vector<std::string>::iterator lineIt;
+	std::vector<std::string> numbers;
+	std::vector<std::string>::iterator numberIt;
+
+	int largestWidth = 0;
+	int largestHeight = 0;
+
+	if (fs::is_regular_file(path))
+	{
+		if (!readLines(path, lines))
+			return Image();
+
+		int data[8];
+
+		for (lineIt = lines.begin(); lineIt != lines.end(); ++lineIt)
+		{
+			boost::split(numbers, *lineIt, boost::is_any_of(" "));
+			for (numberIt = numbers.begin(); numberIt != numbers.end(); ++numberIt)
+			{
+				data[numberIt - numbers.begin()] = atoi((*numberIt).c_str());
+			}
+			fontBitmap[data[0]] = CharData(data);
+		}
+
+		std::map<char, CharData>::iterator mapIt;
+		for (mapIt = fontBitmap.begin(); mapIt != fontBitmap.end(); ++mapIt)
+		{
+			mapIt->second.reduce(largestWidth, largestHeight);
+		}
+	}
+
+	path = path.replace_extension("kerning");
+
+	lines.clear();
+	numbers.clear();
+
+	if (fs::is_regular_file(path))
+	{
+		if (!readLines(path, lines))
+			return image;
+
+		int kerningData[3];
+
+		for (lineIt = lines.begin(); lineIt != lines.end(); ++lineIt)
+		{
+			boost::split(numbers, *lineIt, boost::is_any_of(" "));
+			for (numberIt = numbers.begin(); numberIt != numbers.end(); ++numberIt)
+			{
+				kerningData[numberIt - numbers.begin()] = atoi((*numberIt).c_str());
+			}
+			fontBitmap[kerningData[1]].add(kerningData[0], (float) kerningData[2] / (float) largestWidth);
+		}
+	}
+	return image;
 }
 
 CharData Font::getCharData(char letter)
@@ -28,18 +114,18 @@ void Font::drawString(std::string whatchars, double x, double y, double z, float
 	for (i = 0; i < whatchars.length(); i++)
 	{
 		letter = getCharData(whatchars[i]);
-		if (letter.getWidth() != -1)
+		if (letter.width != -1)
 		{
-			width = letter.getWidth() * pointFont;
-			xOffset = letter.getXOffset() * pointFont;
+			width = letter.width * pointFont;
+			xOffset = letter.xOffset * pointFont;
 			if (i > 0)
 			{
 				xOffset += letter.get(pastLetter) * pointFont;
 			}
-			yOffset = letter.getYOffset() * pointFont;
+			yOffset = letter.yOffset * pointFont;
 			if (whatchars[i] != ' ')
-				Engine::rectTex(x + xOffset, y + yOffset, x + width + xOffset, y + letter.getHeight() * pointFont + yOffset, z, letter.getTexture());
-			x += letter.getAdvance() * pointFont;
+				Engine::rectTex(x + xOffset, y + yOffset, x + width + xOffset, y + letter.height * pointFont + yOffset, z, letter.texture);
+			x += letter.xadvance * pointFont;
 			pastLetter = whatchars[i];
 		}
 	}
@@ -62,12 +148,12 @@ void Font::drawAlignedString(std::string whatchars, double x, double y, double z
 
 void Font::drawFittedString(std::string whatchars, double x, double y, double z, double width, double height)
 {
-	drawString(whatchars, x, y, z, fminf(height / getTextHeight(whatchars), width / getTextWidth(whatchars)));
+	drawString(whatchars, x, y, z, fminf((float) height / getTextHeight(whatchars), (float) width / getTextWidth(whatchars)));
 }
 
 void Font::drawAlignedFittedString(std::string whatchars, double x, double y, double z, int alignment, double width, double height)
 {
-	double pointFont = fminf(height / getTextHeight(whatchars), width / getTextWidth(whatchars));
+	float pointFont = std::min<float>((float) height / getTextHeight(whatchars), (float) width / getTextWidth(whatchars));
 	switch (alignment)
 	{
 	case 1:
@@ -98,26 +184,26 @@ void Font::drawColorString(std::string whatchars, double x, double y, double z, 
 	for (i = 0; i < whatchars.length(); i++)
 	{
 		letter = getCharData(whatchars[i]);
-		if (letter.getWidth() != -1)
+		if (letter.width != -1)
 		{
-			width = letter.getWidth() * pointFont;
-			xOffset = letter.getXOffset() * pointFont;
+			width = letter.width * pointFont;
+			xOffset = letter.xOffset * pointFont;
 			if (i > 0)
 			{
 				xOffset += letter.get(pastLetter) * pointFont;
 			}
-			yOffset = letter.getYOffset() * pointFont;
+			yOffset = letter.yOffset * pointFont;
 			if (whatchars[i] != ' ')
 			{
 				Engine::rectLRTex(x + xOffset, y + yOffset, x + width + xOffset,
-					y + letter.getHeight() * pointFont + yOffset, z,
-					Color(Engine::getRed() + (redShift * width),
-						Engine::getGreen() + (greenShift * width),
-						Engine::getBlue() + (blueShift * width),
-						Engine::getAlpha() + (alphaShift * width)),
-					letter.getTexture());
+					y + letter.height * pointFont + yOffset, z,
+					Color(Engine::getRed() + (float) (redShift * width),
+						Engine::getGreen() + (float) (greenShift * width),
+						Engine::getBlue() + (float) (blueShift * width),
+						Engine::getAlpha() + (float) (alphaShift * width)),
+					letter.texture);
 			}
-			x += letter.getAdvance() * pointFont;
+			x += letter.xadvance * pointFont;
 			pastLetter = whatchars[i];
 		}
 	}
@@ -138,9 +224,14 @@ void Font::drawAlignedCString(std::string whatchars, double x, double y, double 
 	drawColorString(whatchars, x, y, z, pointFont, rightColor);
 }
 
+void Font::drawFittedCString(std::string whatchars, double x, double y, double z, double width, double height, Color rightColor)
+{
+	drawColorString(whatchars, x, y, z, std::min<float>((float) height / getTextHeight(whatchars), (float) width / getTextWidth(whatchars)), rightColor);
+}
+
 void Font::drawAlignedFCString(std::string whatchars, double x, double y, double z, int alignment, double width, double height, Color rightColor)
 {
-	double pointFont = fminf(height / getTextHeight(whatchars), width / getTextWidth(whatchars));
+	float pointFont = std::min<float>((float) height / getTextHeight(whatchars), (float) width / getTextWidth(whatchars));
 	switch (alignment)
 	{
 	case 1:
@@ -161,9 +252,9 @@ float Font::getTextWidth(std::string whatchars)
 	for (int i = 0; i < whatchars.length(); i++)
 	{
 		letter = getCharData(whatchars[i]);
-		if (letter.getWidth() != -1)
+		if (letter.width != -1)
 		{
-			totalWidth += letter.getAdvance();
+			totalWidth += letter.xadvance;
 		}
 		else
 		{
@@ -186,9 +277,9 @@ float Font::getTextHeight(std::string whatchars)
 	for (int i = 0; i < whatchars.length(); i++)
 	{
 		letter = getCharData(whatchars[i]);
-		if (letter.getWidth() != -1)
+		if (letter.width != -1)
 		{
-			largestHeight = fmax(letter.getHeight() + letter.getYOffset(), largestHeight);
+			largestHeight = fmax(letter.height + letter.yOffset, largestHeight);
 		}
 		else
 		{
@@ -201,50 +292,4 @@ float Font::getTextHeight(std::string whatchars)
 float Font::getTextHeight(std::string whatchars, float pointFont)
 {
 	return getTextHeight(whatchars) * pointFont;
-}
-
-CharData::CharData() 
-{
-	kernings = std::map<char, float>();
-	width = height = xOffset = yOffset = xadvance = -1;
-}
-
-TexCoord CharData::getTexture()
-{
-	return texture;
-}
-
-float CharData::getWidth()
-{
-	return width;
-}
-
-float CharData::getHeight()
-{
-	return height;
-}
-
-float CharData::getXOffset()
-{
-	return xOffset;
-}
-
-float CharData::getYOffset()
-{
-	return yOffset;
-}
-
-float CharData::getAdvance()
-{
-	return xadvance;
-}
-
-void CharData::add(char otherChar, float adjustment)
-{
-	kernings[otherChar] = adjustment;
-}
-
-float CharData::get(char otherChar)
-{
-	return kernings[otherChar];
 }

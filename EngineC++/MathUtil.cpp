@@ -48,7 +48,7 @@ float clamp(float value, float clampAtMin, float clampAtMax)
 	return value;
 }
 
-float log(float base, float value)
+float logb(float base, float value)
 {
 	return log(value) / log(base);
 }
