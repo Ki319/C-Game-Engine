@@ -142,7 +142,7 @@ void Window::handleKeyInput(float delta)
 				removeModifierKey(keyCode);
 			}
 
-			//call the gui keyRelease function and erase the key from the keyboardPress map
+			//call the release function and erase the key from the keyboardPress map
 			currentGui->keyRelease(keyCode, key.y, getModKeys());
 			keyboard.erase(keyCode);
 		}
@@ -151,22 +151,27 @@ void Window::handleKeyInput(float delta)
 
 void Window::handleMouseInput(float delta)
 {
-	std::map<int, glm::vec4>::iterator it;
+	std::map<int, glm::vec2>::iterator it;
+	//iterate through all mouse buttons that are currently active
 	for (it = mouse.begin(); it != mouse.end(); ++it)
 	{
 		int button = it->first;
-		glm::vec4 position = it->second;
+		glm::vec2 position = it->second;
 
+		//check if the mouse button is still being held
 		if (getMouseState(button) == GLFW_PRESS)
 		{
-			if (!currentGui->mouseHeld(button, position.x, position.y, position.z, position.w))
+			//if held function returns false then remove button from map
+			//no release function will be called then
+			if (!currentGui->mouseHeld(button, position.x, position.y, mousePosition.mouseDeltaX, mousePosition.mouseDeltaY))
 			{
 				mouse.erase(button);
 			}
 		}
 		else
 		{
-			currentGui->mouseRelease(button, position.x, position.y, position.z, position.w);
+			//call release function and erase from map
+			currentGui->mouseRelease(button, position.x, position.y, mousePosition.mouseDeltaX, mousePosition.mouseDeltaY);
 			mouse.erase(button);
 		}
 	}
@@ -181,19 +186,22 @@ void Window::cursorMove(double mouseX, double mouseY)
 	mousePosition.mouseY = (float)(mouseY * heightScaled());
 }
 
-void Window::mouseClick(int button, int action)
+void Window::mouseClick(int button, int state)
 {
-	if (action != GLFW_PRESS)
+	//makes sure function only handles the press state
+	if (state != GLFW_PRESS)
 		return;
 
+	//erases mouse button from map if the in the odd chance of fast inputs
 	if (mouse.find(button) != mouse.end())
 	{
 		mouse.erase(button);
 	}
 
+	//calls click function, if true then add to map for handling
 	if (currentGui->mouseClick(button, mousePosition.mouseX, mousePosition.mouseY))
 	{
-		glm::vec4 position(mousePosition.mouseX, mousePosition.mouseY, 0, 0);
+		glm::vec2 position(mousePosition.mouseX, mousePosition.mouseY);
 		mouse[button] = position;
 	}
 }
@@ -203,9 +211,10 @@ void Window::mouseScroll(double xOffset, double yOffset)
 	currentGui->mouseScroll((float)xOffset, (float)yOffset);
 }
 
-void Window::keyboardClick(int keyCode, int action)
+void Window::keyboardClick(int keyCode, int state)
 {
-	if (action != GLFW_PRESS)
+	//makes sure function only handles the press state
+	if (state != GLFW_PRESS)
 		return;
 
 	//if letter is between 'A' and 'Z', make sure that it is properly cased 
@@ -215,8 +224,12 @@ void Window::keyboardClick(int keyCode, int action)
 		//shift towards caps if CAPS_LOCK is on, or shift is pressed
 		keyCode = keyCode + 32 * !(currentModifierKeys & 16 || currentModifierKeys & 1);
 	}
+
+	//check if key is a modifier key
+	//such as shift, ctrl, alt, super, and caps lock
 	if (!notModifierKey(keyCode))
 	{
+		//caps lock modifier key is handled slightly different
 		if (keyCode == GLFW_KEY_CAPS_LOCK)
 		{
 			if ((currentModifierKeys & 16) == 1)
@@ -234,11 +247,15 @@ void Window::keyboardClick(int keyCode, int action)
 		}
 	}
 
+	//erases keycode from map if the in the odd chance of fast inputs
 	if (keyboard.find(keyCode) != keyboard.end())
 	{
 		keyboard.erase(keyCode);
 	}
 
+	//press function returns a time (1 being one second) for how
+	//long the function should wait until the next call.
+	//Has to be greater than zero otherwise won't add to map
 	float time = currentGui->keyPressed(keyCode, currentModifierKeys);
 
 	if (time > 0.0001f)
@@ -250,18 +267,56 @@ void Window::keyboardClick(int keyCode, int action)
 
 void Window::windowSize(int width, int height)
 {
+	//width and height are positive integers.
+	//only updates framebuffer if the width and height
+	//are greater than 0 together
 	if (width + height != 0)
 		updateSize();
 }
 
 bool Window::setup()
 {
-	GLFWwindow *instance;
+	//gets the custom instance of the window
+	GLFWwindow *instance = createWindow(currentSettings->getNextWindow());
 
+	//sets the current window mode to the one that it changed to
+	currentWindowMode = currentSettings->getNextWindow();
+
+	//if the instance is a nullptr, then application terminates
+	if (!instance)
+	{
+		close();
+		return false;
+	}
+
+	//destroies old copy of the window
+	if (windowInstance)
+	{
+		glfwDestroyWindow(windowInstance);
+	}
+
+	//reinitialize window
+	windowInstance = instance;
+
+	setEvents();
+
+	//make current and update content
+	glfwMakeContextCurrent(windowInstance);
+	glfwSwapInterval(1);
+	updateSize();
+	glfwShowWindow(windowInstance);
+
+	//true when instance isn't nullptr
+	return instance;
+}
+
+GLFWwindow *Window::createDefaultWindow(int state)
+{
+	GLFWwindow *instance;
 	//regular window, not fullscreen or borderless fullscreen
 	if (currentSettings->getNextWindow() == 0)
 	{
-		instance = createWindow();
+		instance = createCenteredWindow(1280, 720);
 	}
 	//fullscreen borderless
 	else if (currentSettings->getNextWindow() == 1)
@@ -282,29 +337,7 @@ bool Window::setup()
 		instance = glfwCreateWindow(vidmode->width, vidmode->height,
 			getTitle(), getMonitor(), windowInstance);
 	}
-
-	currentWindowMode = currentSettings->getNextWindow();
-
-	if (!instance)
-	{
-		glfwTerminate();
-		return false;
-	}
-
-	if (windowInstance)
-	{
-		glfwDestroyWindow(windowInstance);
-	}
-
-	windowInstance = instance;
-
-	setEvents();
-
-	glfwMakeContextCurrent(windowInstance);
-	glfwSwapInterval(1);
-	updateSize();
-	glfwShowWindow(windowInstance);
-	return instance != nullptr;
+	return instance;
 }
 
 void Window::setEvents()
@@ -344,7 +377,7 @@ void Window::gl3d(float fovy, float zNear, float zFar)
 		fovy, zNear, zFar);
 }
 
-void Window::setToClose()
+void Window::close()
 {
 	isRunning = false;
 }
@@ -355,12 +388,15 @@ void Window::destroy()
 	glfwTerminate();
 }
 
-GLFWwindow *Window::createAndCenter(int width, int height)
+GLFWwindow *Window::createCenteredWindow(int width, int height)
 {
-	GLFWwindow *instance = glfwCreateWindow(width, height, getTitle(), getMonitor(),
-		!windowInstance ? nullptr : windowInstance);
+	GLFWwindow *parent = !windowInstance ? nullptr : windowInstance;
+	GLFWwindow *instance = glfwCreateWindow(width, height, getTitle(), getMonitor(), parent);
+
 	const GLFWvidmode *vidMode = glfwGetVideoMode(getMonitor());
+
 	glfwSetWindowPos(instance, (vidMode->width - width) / 2, (vidMode->height - height) / 2);
+
 	return instance;
 }
 
@@ -368,7 +404,7 @@ void Window::setGui(Gui *newGui)
 {
 	if (!newGui)
 	{
-		setToClose();
+		close();
 		return;
 	}
 	if (currentGui)

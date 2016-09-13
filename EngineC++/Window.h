@@ -66,11 +66,7 @@ public:
 
 	
 	//Called when one desires to shutdown the application.
-	void setToClose();
-	
-	//Called when the application is finally shutdown.
-	void destroy();
-
+	void close();
 	
 	//Changes the gui to a new one, if the newGui variable is a nullptr then the application
 	//will set to close.
@@ -157,9 +153,8 @@ protected:
 
 	//the map of all mouse button active, the value returned from a mouse button gives four
 	//values in vector format. First number is the first x coordinate. The second number
-	//is the first y coordinate. The third number is the delta x from the last update.
-	// The fourth number is the delta y from the last update.
-	std::map<int, glm::vec4> mouse = std::map<int, glm::vec4>();
+	//is the first y coordinate.
+	std::map<int, glm::vec2> mouse = std::map<int, glm::vec2>();
 
 	//the current gui that recieves calls for a variety of things including input, update,
 	//and render
@@ -171,8 +166,13 @@ protected:
 	//Called for initializing special details involved with the window.
 	virtual void init() = 0;
 	
+	virtual GLFWwindow* createDefaultWindow(int state);
+
 	//Called for generating the windowed version of the application.
-	virtual GLFWwindow *createWindow() = 0;
+	virtual GLFWwindow *createWindow(int state) = 0;
+
+	//Called as an easy way to generate a centered window for the user.
+	GLFWwindow *createCenteredWindow(int width, int height);
 
 	//Called for getting the monitor that the application.
 	virtual GLFWmonitor* getMonitor();
@@ -198,9 +198,8 @@ protected:
 	//Called for removing a mod key from the current list.
 	void removeModifierKey(int key);
 
-
-	//Called as an easy way to generate a centered window for the user.
-	GLFWwindow *createAndCenter(int width, int height);
+	//Called when the application is finally shutdown.
+	void destroy();
 
 private:
 

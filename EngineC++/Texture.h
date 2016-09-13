@@ -21,8 +21,7 @@ public:
 
 protected:
 	GLuint *textureId;
-	GLuint imageWidth;
-	GLuint imageHeight;
+	Image image;
 };
 
 
